@@ -20,7 +20,7 @@ export const DefaultPosts = ({ prevDate }: { prevDate: Date }) => {
   useEffect(() => {
     if (inView) {
       fetchPostsData(lastDate).then((data: PopulatedPostType[]) => {
-        setAllPosts([...allPosts, ...data]);
+        setAllPosts((prevPosts) => [...prevPosts, ...data]);
         if (data.length === 0) {
           setLoading(false);
           return;
@@ -28,13 +28,13 @@ export const DefaultPosts = ({ prevDate }: { prevDate: Date }) => {
         setLastDate(data[data.length - 1].createdAt);
       });
     }
-  }, [inView]);
+  }, [inView, lastDate]);
 
   return (
     <>
-      {allPosts.map((post, index) => {
-        return <PostCard key={index} post={post} />;
-      })}
+      {allPosts.map((post, index) => (
+        <PostCard key={index} post={post} />
+      ))}
       <div ref={ref} className="h-10 w-screen text-center">
         {loading ? (
           <div className="mx-auto h-full w-10 animate-spin rounded-full border-b-2 border-r-2 border-bgSecondary"></div>
