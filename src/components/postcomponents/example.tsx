@@ -1,43 +1,18 @@
 'use client';
-import React, { useState } from 'react';
+import React, { useState, useActionState } from 'react';
+import { useRouter } from 'next/navigation';
+import { Session } from 'next-auth';
 import Image from 'next/image';
 import MDEditor from '@uiw/react-md-editor';
-import { z } from 'zod';
 import { PostFormValidation } from '@/lib/validations';
-import { Session } from 'next-auth';
-import { useRouter } from 'next/navigation';
+import { z } from 'zod';
+import { createPostApiReq } from '@/lib/serverAction';
 import { toast } from 'react-toastify';
-import axios, { AxiosResponse } from 'axios';
-
-type postFormType = {
-  title: string;
-  description: string;
-  image: string;
-  category: string;
-  about: string;
-};
-
-export const createPostApiReq = async (
-  postForm: postFormType,
-  session: Session
-) => {
-  try {
-    const res: AxiosResponse<{ status: number }> = await axios.post(
-      `/api/post`,
-      { postForm, email: session.user?.email }
-    );
-    if (res.status === 200) return { message: 'Post Created Succesfully' };
-    else return { error: 'Error while creating Post, try again later' };
-  } catch (err) {
-    console.log(err);
-    return { error: 'Something went wrong, Please try again later' };
-  }
-};
 
 const CreatePostForm = ({ session }: { session: Session }) => {
   const router = useRouter();
 
-  //All the states
+  //All the States
   const [userProfile, setUserProfile] = useState<string | ArrayBuffer | null>(
     null
   );
@@ -45,11 +20,9 @@ const CreatePostForm = ({ session }: { session: Session }) => {
   const [formError, setFormError] = useState<{
     title?: string;
     description?: string;
-    about?: string;
   }>({});
-  const [isPending, setisPending] = useState<boolean>(false);
-  console.log(formError);
-  //function to convert the image to base64
+
+  //Function to convert the image to base64
   const convertImg = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
@@ -61,12 +34,8 @@ const CreatePostForm = ({ session }: { session: Session }) => {
     }
   };
 
-  //function to submit the post
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    setisPending(true);
-    setFormError({});
-    e.preventDefault();
-    const formData = new FormData(e.currentTarget);
+  //Function  to submit the post ot the server
+  const createPost = async (previousState: unknown, formData: FormData) => {
     const postForm = {
       title: formData.get('title') as string,
       description: formData.get('desc') as string,
@@ -74,6 +43,7 @@ const CreatePostForm = ({ session }: { session: Session }) => {
       category: formData.get('category') as string,
       about,
     };
+    setFormError({});
     try {
       await PostFormValidation.parseAsync(postForm);
       const { message, error } = await createPostApiReq(postForm, session);
@@ -81,6 +51,7 @@ const CreatePostForm = ({ session }: { session: Session }) => {
         toast.success(message);
         router.push('/');
       }
+      if (error) toast.error(error);
     } catch (err) {
       if (err instanceof z.ZodError) {
         console.log(err.errors);
@@ -90,15 +61,15 @@ const CreatePostForm = ({ session }: { session: Session }) => {
           });
         });
       }
-    } finally {
-      setisPending(false);
     }
   };
 
+  const [data, handleSubmit, isPending] = useActionState(createPost, undefined);
+  console.log(data);
   return (
     <>
       <form
-        onSubmit={handleSubmit}
+        action={handleSubmit}
         className="create-form flex flex-col w-[90%] max-w-[900px] mx-auto"
       >
         <label htmlFor="title">Title:</label>
@@ -166,7 +137,6 @@ const CreatePostForm = ({ session }: { session: Session }) => {
             previewOptions={{ disallowedElements: ['style'] }}
           />
         </div>
-        {formError.about && <p className="text-red-500">{formError.about}</p>}
 
         <button
           type="submit"
@@ -178,5 +148,4 @@ const CreatePostForm = ({ session }: { session: Session }) => {
     </>
   );
 };
-
 export default CreatePostForm;
