@@ -48,7 +48,7 @@ const CreatePostForm = ({ session }: { session: Session }) => {
     about?: string;
   }>({});
   const [isPending, setisPending] = useState<boolean>(false);
-  console.log(formError);
+
   //function to convert the image to base64
   const convertImg = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -76,10 +76,12 @@ const CreatePostForm = ({ session }: { session: Session }) => {
     };
     try {
       await PostFormValidation.parseAsync(postForm);
-      const { message, error } = await createPostApiReq(postForm, session);
+      const { message, error } :{message?:string,error?:string}= await createPostApiReq(postForm, session);
       if (message) {
         toast.success(message);
         router.push('/');
+      }else if(error){
+        toast.error(error);
       }
     } catch (err) {
       if (err instanceof z.ZodError) {
