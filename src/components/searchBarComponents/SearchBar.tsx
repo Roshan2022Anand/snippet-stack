@@ -6,7 +6,7 @@ import { FaSearch } from 'react-icons/fa';
 const SearchBar = async ({ query }: { query?: string }) => {
   return (
     <Form
-      action="/"
+      action="/public"
       className="search-form mx-auto flex w-fit items-center justify-center gap-5 rounded-lg border-2 border-accentPrimary bg-bgPrimary px-2 py-1"
     >
       <input

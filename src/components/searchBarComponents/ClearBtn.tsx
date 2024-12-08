@@ -10,7 +10,7 @@ const ClearBtn = () => {
   };
   return (
     <button onClick={clearSearch} className="normal-btn">
-      <Link href="/">
+      <Link href="/public">
         <ImCross className="rotate-45" />
       </Link>
     </button>

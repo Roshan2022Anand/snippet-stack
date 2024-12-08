@@ -20,11 +20,11 @@ export const DefaultPosts = ({ prevDate }: { prevDate: Date }) => {
   useEffect(() => {
     if (inView) {
       fetchPostsData(lastDate).then((data: PopulatedPostType[]) => {
-        setAllPosts((prevPosts) => [...prevPosts, ...data]);
         if (data.length === 0) {
           setLoading(false);
           return;
         }
+        setAllPosts((prevPosts) => [...prevPosts, ...data]);
         setLastDate(data[data.length - 1].createdAt);
       });
     }

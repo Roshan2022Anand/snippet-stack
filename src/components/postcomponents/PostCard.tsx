@@ -2,12 +2,12 @@ import React from 'react';
 import { PopulatedPostType } from '@/lib/types';
 import Link from 'next/link';
 import Image from 'next/image';
-import { formatDate } from '@/lib/utilities';
+import { formatDate } from '@/lib/client-utils';
 import {
   CommentSection,
   ViewsSection,
   VoteSection,
-} from '@/components/PostCardButtons';
+} from '@/components/postcomponents/PostCardButtons';
 
 const PostCard = ({ post }: { post: PopulatedPostType }) => {
   return (

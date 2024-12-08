@@ -1,4 +1,3 @@
-
 //function to format the date
 export const formatDate = (date: Date) => {
   const options: Intl.DateTimeFormatOptions = {

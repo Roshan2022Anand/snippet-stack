@@ -7,22 +7,22 @@ import axios from 'axios';
 import Image from 'next/image';
 import { IoIosLogIn, IoMdAdd } from 'react-icons/io';
 import { FaGithub } from 'react-icons/fa';
-import { headers } from 'next/headers';
+import { getBaseUrl } from '@/lib/server-utilis';
 
 const NavBar = async () => {
   const session: Session | null = await auth();
-  const headersList = await headers();
-  const host = headersList.get('host');
-  const protocol = headersList.get('x-forwarded-proto') || 'http';
-  const baseUrl = `${protocol}://${host}`;
 
+  const baseUrl = await getBaseUrl();
+
+  let userID;
   if (session?.user) {
     const res = await axios.post(`${baseUrl}/api/user`, {
       email: session.user.email as string,
       name: session.user.name as string,
       image: session.user.image as string,
     });
-    if (res.data.error) return <div> {res.data.error} </div>;
+    if (res.data.id) userID = res.data.id;
+    if (res.data.error) return null;
   }
 
   return (
@@ -48,14 +48,16 @@ const NavBar = async () => {
               <IoIosLogIn className="size-full" />
             </button>
           </Form>
-          <Image
-            src={`${session.user.image}`}
-            alt={`${session.user.name}`}
-            width={100}
-            height={100}
-            className="size-[6vw] max-w-[50px] max-h-[50px] rounded-full border-4 border-accentPrimary"
-            priority
-          />
+          <Link href={`/profile/${userID}`}>
+            <Image
+              src={`${session.user.image}`}
+              alt={`${session.user.name}`}
+              width={100}
+              height={100}
+              className="size-[6vw] max-w-[50px] max-h-[50px] rounded-full border-4 border-accentPrimary"
+              priority
+            />
+          </Link>
         </nav>
       ) : (
         <Form

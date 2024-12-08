@@ -26,10 +26,11 @@ export async function GET(req: NextRequest) {
     );
   } catch (err: unknown) {
     const error = err as AxiosError;
-    console.log(error.message);
     return NextResponse.json(
-      { error: `galala ${error.message}` },
+      { error: error},
       { status: 200 }
     );
   }
 }
+
+// <div>page <!-- -->galala querySrv ECONNREFUSED _mongodb._tcp.main.azaqy.mongodb.net<!-- --> </div>

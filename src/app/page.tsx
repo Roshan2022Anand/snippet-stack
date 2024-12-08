@@ -1,30 +1,24 @@
 import React, { Suspense } from 'react';
-import SearchBar from '@/components/SearchBar';
+import SearchBar from '@/components/searchBarComponents/SearchBar';
 import NavBar from '@/components/NavBar';
 import PostContainer from '@/components/postcomponents/PostContainer';
 import { PopulatedPostType } from '@/lib/types';
-import { headers } from 'next/headers';
+import { PostContainerSkeliton } from '@/components/Skelitons';
+import { getBaseUrl } from '@/lib/server-utilis';
 
 const Page = async ({
-                      searchParams,
-                    }: {
+  searchParams,
+}: {
   searchParams: Promise<{ query?: string }>;
 }) => {
   const query = (await searchParams).query;
-
-  const headersList = await headers();
-  const host = headersList.get('host');
-  const protocol = headersList.get('x-forwarded-proto') || 'http';
-  const baseUrl = `${protocol}://${host}`;
-
+  const baseUrl = await getBaseUrl();
   const res = await fetch(`${baseUrl}/api/allPosts`, {
     method: 'GET',
     next: { revalidate: 60 },
   });
   const data = await res.json();
-  if (data.error) return <div> {data.error} </div>;
-  const posts: PopulatedPostType[] = data.currPosts;
-
+  const posts: PopulatedPostType[] | undefined = data.currPosts;
   return (
     <>
       <header className="w-full">
@@ -35,9 +29,13 @@ const Page = async ({
         </section>
       </header>
       <main>
-        <Suspense fallback={<div>Loading...</div>}>
-          <PostContainer query={query} posts={posts} />
-        </Suspense>
+        {posts ? (
+          <Suspense fallback={<div>Loading...</div>}>
+            <PostContainer query={query} posts={posts} />
+          </Suspense>
+        ) : (
+          <PostContainerSkeliton />
+        )}
       </main>
     </>
   );

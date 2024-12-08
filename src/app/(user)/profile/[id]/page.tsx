@@ -1,20 +1,15 @@
 import React from 'react';
-import Link from 'next/link';
 import axios from 'axios';
-import { PostType } from '@/lib/types';
-import { FaArrowRight } from 'react-icons/fa';
 import { getBaseUrl } from '@/lib/server-utilis';
+import Link from 'next/link';
+import { FaArrowRight } from 'react-icons/fa';
 
 const Page = async ({ params }: { params: Promise<{ id: string }> }) => {
-  const postId = (await params).id;
-
   const baseUrl = await getBaseUrl();
 
-  const res = await axios.get(`${baseUrl}/api/post`, {
-    params: { postId },
-  });
-  const { postData }: { postData: PostType } = res.data;
-
+  const userID = (await params).id;
+  const res = await axios.get(`${baseUrl}/api/user`,{params:{userID}});
+  console.log(res.data,userID);
   return (
     <>
       <header className="flex w-full flex-col">
@@ -29,11 +24,9 @@ const Page = async ({ params }: { params: Promise<{ id: string }> }) => {
           <p className="border-2 border-accentPrimary px-2 py-1 text-accentPrimary">
             {/*{postData.createdAt}*/}
           </p>
-          <h1>{postData.title}</h1>
         </section>
       </header>
       <main>
-        <p>{postData.description}</p>
       </main>
     </>
   );
