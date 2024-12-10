@@ -1,7 +1,7 @@
 'use client';
 import { useInView } from 'react-intersection-observer';
 import React, { useEffect, useState } from 'react';
-import PostCard from '@/components/postcomponents/PostCard';
+import PostCard from '@/components/post-components/PostCard';
 import { PopulatedPostType } from '@/lib/types';
 import axios from 'axios';
 

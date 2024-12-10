@@ -1,6 +1,6 @@
 import React from 'react';
-import { DefaultPosts } from '@/components/postcomponents/InfiniteScrolling';
-import PostCard from '@/components/postcomponents/PostCard';
+import { DefaultPosts } from '@/components/post-components/InfiniteScrolling';
+import PostCard from '@/components/post-components/PostCard';
 import { PopulatedPostType } from '@/lib/types';
 
 const PostContainer = async ({

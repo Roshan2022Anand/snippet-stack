@@ -7,7 +7,7 @@ import {
   CommentSection,
   ViewsSection,
   VoteSection,
-} from '@/components/postcomponents/PostCardButtons';
+} from '@/components/post-components/PostCardButtons';
 
 const PostCard = ({ post }: { post: PopulatedPostType }) => {
   return (

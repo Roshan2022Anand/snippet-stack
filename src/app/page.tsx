@@ -1,7 +1,7 @@
 import React, { Suspense } from 'react';
-import SearchBar from '@/components/searchBarComponents/SearchBar';
+import SearchBar from '@/components/search-bar-components/SearchBar';
 import NavBar from '@/components/NavBar';
-import PostContainer from '@/components/postcomponents/PostContainer';
+import PostContainer from '@/components/post-components/PostContainer';
 import { PopulatedPostType } from '@/lib/types';
 import { PostContainerSkeliton } from '@/components/Skelitons';
 import { getBaseUrl } from '@/lib/server-utilis';

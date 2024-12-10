@@ -1,7 +1,7 @@
 import React from 'react';
 import { auth } from '@/auth';
 import { Session } from 'next-auth';
-import CreatePostForm from '@/components/postcomponents/CreatePostForm';
+import CreatePostForm from '@/components/post-components/CreatePostForm';
 import { redirect } from 'next/navigation';
 import { FaArrowRightFromBracket } from 'react-icons/fa6';
 import Link from 'next/link';
