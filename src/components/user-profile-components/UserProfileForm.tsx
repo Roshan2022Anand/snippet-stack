@@ -4,16 +4,56 @@ import Image from 'next/image';
 import { FaPen } from 'react-icons/fa';
 import { TiTick } from 'react-icons/ti';
 import { UserType } from '@/lib/types';
+import axios from 'axios';
+import { toast } from 'react-toastify';
 
-const UserProfileForm = ({ userData }: { userData: UserType}) => {
+const UserProfileForm = ({ userData }: { userData: UserType }) => {
   const { name, bio, image } = userData;
 
-  const [nameState, setNameState] = useState<boolean>(false);
-  const [bioState, setBioState] = useState<boolean>(false);
+  const [editState, setEditState] = useState<boolean>(false);
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const formData = new FormData(e.currentTarget);
+    const updatedUserData = {
+      name: formData.get('name'),
+      bio: formData.get('bio'),
+      // image: formData.get('image'),
+    };
+
+    const res = await axios.put('/api/user', {
+      updatedUserData,
+      userID: userData._id,
+    });
+    if (!res.data.error) toast.success('Profile Updated Successfully');
+    else toast.error('Something went wrong while updating the profile');
+  };
 
   return (
-    <section className="sm:flex flex-row-reverse items-center justify-around w-full">
-      <section className="relative">
+    <form
+      onSubmit={handleSubmit}
+      className="flex flex-col sm:flex-row-reverse  items-center justify-around w-full relative"
+    >
+      <section className="absolute top-1 right-1">
+        {editState ? (
+          <button
+            type="button"
+            className="btn-accent-one"
+            onClick={() => setEditState(!editState)}
+          >
+            <TiTick />
+          </button>
+        ) : (
+          <button
+            type="submit"
+            className="btn-accent-one"
+            onClick={() => setEditState(!editState)}
+          >
+            <FaPen />
+          </button>
+        )}
+      </section>
+      <section className="relative w-fit">
         <Image
           src={`${image}`}
           alt={name}
@@ -21,9 +61,13 @@ const UserProfileForm = ({ userData }: { userData: UserType}) => {
           height={200}
           className="rounded-full border-4 border-accentPrimary"
         />
-        <button className="btn-accent-one absolute top-2/3 right-0">
-          <FaPen />
-        </button>
+        {/*<input*/}
+        {/*  className="w-2/3 absolute top-1/2 left-1/2 bg-accentPrimary -translate-x-1/2 -translate-y-1/2 rounded-full border-4 border-bgPrimary"*/}
+        {/*  type="file"*/}
+        {/*  style={{*/}
+        {/*    display: editState ? 'block' : 'none',*/}
+        {/*  }}*/}
+        {/*/>*/}
       </section>
       <section className="flex flex-col w-2/3">
         <label>Name</label>
@@ -31,51 +75,21 @@ const UserProfileForm = ({ userData }: { userData: UserType}) => {
           <input
             type="text"
             defaultValue={name}
-            disabled={!nameState}
+            disabled={!editState}
             className="bg-transparent grow"
           />
-          {nameState ? (
-            <button
-              className="btn-accent-one"
-              onClick={() => setNameState(!nameState)}
-            >
-              <TiTick />
-            </button>
-          ) : (
-            <button
-              className="btn-accent-one"
-              onClick={() => setNameState(!nameState)}
-            >
-              <FaPen />
-            </button>
-          )}
         </fieldset>
         <label>Bio</label>
         <fieldset>
           <input
             type="text"
             defaultValue={bio}
-            disabled={!bioState}
+            disabled={!editState}
             className="bg-transparent grow"
           />
-          {bioState ? (
-            <button
-              className="btn-accent-one"
-              onClick={() => setBioState(!bioState)}
-            >
-              <TiTick />
-            </button>
-          ) : (
-            <button
-              className="btn-accent-one"
-              onClick={() => setBioState(!bioState)}
-            >
-              <FaPen />
-            </button>
-          )}
         </fieldset>
       </section>
-    </section>
+    </form>
   );
 };
 export default UserProfileForm;

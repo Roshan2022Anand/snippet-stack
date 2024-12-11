@@ -3,6 +3,7 @@ import connectDB from '@/lib/mongodb';
 import User from '@/model/user';
 import { AxiosError } from 'axios';
 import { PopulatedUserData } from '@/lib/types';
+import user from '@/model/user';
 
 //To add new User to the database
 export async function POST(req: NextRequest) {
@@ -29,6 +30,24 @@ export async function GET(req: NextRequest) {
     const userID = searchParams.get('userID');
     const currUser = await User.findById(userID).populate('posts');
     return NextResponse.json({ currUser }, { status: 200 });
+  } catch (err: unknown) {
+    const error = err as AxiosError;
+    return NextResponse.json({ error: error.message }, { status: 500 });
+  }
+}
+
+//To update the user details
+export async function PUT(req: NextRequest) {
+  try {
+    await connectDB();
+    const { updatedUserData, userID } = await req.json();
+    const updatedUser = await user.findOneAndUpdate(
+      { _id: userID },
+      updatedUserData,
+      { new: true }
+    );
+    if (updatedUser) return NextResponse.json({ error:false }, { status: 200 });
+    else return NextResponse.json({ error: true }, { status: 200 });
   } catch (err: unknown) {
     const error = err as AxiosError;
     return NextResponse.json({ error: error.message }, { status: 500 });

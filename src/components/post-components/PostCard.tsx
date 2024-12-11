@@ -14,7 +14,13 @@ const PostCard = ({ post }: { post: PopulatedPostType }) => {
     <article className="border-2 border-accentPrimary rounded-lg px-2 py-1 h-[300px] sm:h-[400px] lg:h-[400px]">
       <header className="flex gap-2 h-[15%]">
         <div className="border-4 border-accentPrimary rounded-full w-[60px]">
-          <Image src={post.author.image} alt={post.author.name} width={100} height={100} className="w-full rounded-full"/>
+          <Image
+            src={`${post.author.image}`}
+            alt={`${post.author.name}`}
+            width={100}
+            height={100}
+            className="w-full rounded-full"
+          />
         </div>
         <div>
           <h3 className="sm-bold-text">{post.author.name}</h3>
