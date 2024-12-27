@@ -6,15 +6,20 @@ import { FaArrowRight } from 'react-icons/fa';
 import UserProfileForm from '@/components/user-profile-components/UserProfileForm';
 import { auth, signIn, signOut } from '@/auth';
 import { redirect } from 'next/navigation';
+import { Session } from 'next-auth';
 
 const Page = async ({ params }: { params: Promise<{ id: number }> }) => {
+  //checking if user exists
+  const session: Session | null = await auth();
+  if (!session) redirect('/');
+
   const userID = (await params).id;
   const res = await axios.get('http://localhost:5000/api/user', {
     params: { userID },
   });
   const userData = res.data.userData;
 
-if(!userData) redirect('/');
+  if (!userData) redirect('/');
 
   return (
     <>
@@ -34,6 +39,7 @@ if(!userData) redirect('/');
         </section>
       </header>
       <main>
+        {/* form action to delete the user from db and signOut */}
         <Form
           action={async (): Promise<void> => {
             'use server';

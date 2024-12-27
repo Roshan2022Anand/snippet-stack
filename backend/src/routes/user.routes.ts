@@ -1,6 +1,5 @@
 import { ServerRoute } from "@hapi/hapi";
 import pool from "../configs/dbConfig";
-import { console } from "inspector";
 
 type userPostPayload = {
   email: string;
@@ -36,47 +35,7 @@ const userRoutes: ServerRoute[] = [
       }
     },
   },
-
-  //API endpoint to Add the details of user
-  {
-    path: "/api/user",
-    method: "POST",
-    handler: async (request, h) => {
-      try {
-        const { email, name, image }: userPostPayload =
-          request.payload as userPostPayload;
-
-        //Query to check if the users exists or not
-        const userExists = await pool.query(
-          `SELECT user_id FROM users u WHERE u.email = '${email}'`
-        );
-
-        //If Exists send Welcome back msg
-        if (userExists.rows.length > 0) {
-          return h
-            .response({
-              message: `Welcome back ${name}`,
-              id: userExists.rows[0].user_id,
-            })
-            .code(200);
-        }
-
-        //if not exist the add them to the DB
-        const res = await pool.query(`INSERT INTO users(name,email,image)
-          VALUES ('${name}','${email}','${image}') RETURNING user_id`);
-
-        return h
-          .response({
-            message: `Welcome to sippet-stack`,
-            id: res.rows[0].user_id,
-          })
-          .code(200);
-      } catch (err) {
-        return h.response("internal error").code(500);
-      }
-    },
-  },
-
+  
   //API endpoint to update the user details
   {
     path: "/api/user",

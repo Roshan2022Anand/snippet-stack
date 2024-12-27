@@ -65,6 +65,8 @@ const CreatePostForm = () => {
     setFormError({});
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
+
+    //creating post object
     const postForm = {
       title: formData.get('title') as string,
       description: formData.get('desc') as string,
@@ -72,6 +74,8 @@ const CreatePostForm = () => {
       category: formData.get('category') as string,
       about,
     };
+
+    //validating the post object and sending the post request
     try {
       await PostFormValidation.parseAsync(postForm);
       const { message, error } :{message?:string,error?:string}= await createPostApiReq(postForm);
@@ -82,6 +86,7 @@ const CreatePostForm = () => {
         toast.error(error);
       }
     } catch (err) {
+      //handling the error by setting the form error state given by the zod error
       if (err instanceof z.ZodError) {
         console.log(err.errors);
         err.errors.map((errObj) => {

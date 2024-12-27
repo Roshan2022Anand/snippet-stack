@@ -21,8 +21,8 @@ const Page = async ({
       <header className="w-full">
         <NavBar />
         <section className="mb-5 flex flex-col items-center justify-center gap-3 bg-bgSecondary py-3">
-          {/* <h1> Brain Storm your ides here </h1>
-          <SearchBar query={query} /> */}
+          <h1> Brain Storm your ides here </h1>
+          <SearchBar query={query} />
         </section>
       </header>
       {/* <main>

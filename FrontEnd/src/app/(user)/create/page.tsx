@@ -25,7 +25,7 @@ const Page = async () => {
           <h1>Create Your post</h1>
         </section>
       </header>
-      <CreatePostForm session={session}/>;
+      <CreatePostForm/>;
     </>
   );
 };

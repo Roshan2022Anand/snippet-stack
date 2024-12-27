@@ -21,13 +21,7 @@ const UserSchema = new Schema<UserType>(
     bio: {
       type: String,
       default: '',
-    },
-    posts: [
-      {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Post',
-      },
-    ],
+    }
   },
   {
     timestamps: true,
