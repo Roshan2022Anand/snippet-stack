@@ -7,6 +7,7 @@ import { PostFormValidation } from '@/lib/validations';
 import { useRouter } from 'next/navigation';
 import { toast } from 'react-toastify';
 import axios, { AxiosResponse } from 'axios';
+import { uploadImage } from '@/lib/supabaseStorage';
 
 type postFormType = {
   title: string;
@@ -16,13 +17,11 @@ type postFormType = {
   about: string;
 };
 
-export const createPostApiReq = async (
-  postForm: postFormType,
-) => {
+export const createPostApiReq = async (postForm: postFormType) => {
   try {
     const res: AxiosResponse<{ status: number }> = await axios.post(
       `/api/post`,
-      { postForm}
+      { postForm }
     );
     if (res.status === 200) return { message: 'Post Created Succesfully' };
     else return { error: 'Error while creating Post, try again later' };
@@ -66,11 +65,13 @@ const CreatePostForm = () => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
 
+    const imgUrl = await uploadImage(formData.get('image') as File);
+
     //creating post object
     const postForm = {
       title: formData.get('title') as string,
       description: formData.get('desc') as string,
-      image: userProfile as string,
+      image: imgUrl as string,
       category: formData.get('category') as string,
       about,
     };
@@ -78,11 +79,12 @@ const CreatePostForm = () => {
     //validating the post object and sending the post request
     try {
       await PostFormValidation.parseAsync(postForm);
-      const { message, error } :{message?:string,error?:string}= await createPostApiReq(postForm);
+      const { message, error }: { message?: string; error?: string } =
+        await createPostApiReq(postForm);
       if (message) {
         toast.success(message);
         router.push('/');
-      }else if(error){
+      } else if (error) {
         toast.error(error);
       }
     } catch (err) {
@@ -140,6 +142,7 @@ const CreatePostForm = () => {
         )}
         <input
           name="image"
+          id="image"
           className="input-field"
           type="file"
           accept="image/*"

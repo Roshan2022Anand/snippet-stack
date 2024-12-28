@@ -4,8 +4,10 @@ import Link from 'next/link';
 import { redirect } from 'next/navigation';
 import React, { useState } from 'react';
 import { toast } from 'react-toastify';
+import { useRouter } from 'next/navigation';
 
 const page = () => {
+  const router = useRouter();
   const [err, seterr] = useState<{ isErr: boolean; msg: string }>({
     isErr: false,
     msg: '',
@@ -31,8 +33,9 @@ const page = () => {
         email,
         password,
       });
+      console.log(res.data);
       toast.success(res.data.message);
-      redirect('/');
+      router.push('/');
     } catch (err: any) {
       toast.error(err.response.data.error);
     }

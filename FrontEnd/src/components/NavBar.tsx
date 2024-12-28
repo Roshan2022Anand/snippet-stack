@@ -6,9 +6,11 @@ import Image from 'next/image';
 import { IoIosLogIn, IoMdAdd } from 'react-icons/io';
 import { FaUserAlt } from 'react-icons/fa';
 
-const NavBar = async () => {
-  const session: string | null = null;
-
+export default async function NavBar() {
+  // const res = await axios.get('http://localhost:5000/api/auth');
+  // const session = res.data.user;
+  // console.log(session);
+  const session = null;
   return (
     <section className="nav-bar">
       <div className="font-bold text-accentPrimary">Logo</div>
@@ -20,7 +22,9 @@ const NavBar = async () => {
                 <IoMdAdd className="size-full" />
               </button>
             </Link>
-
+            <Link href="">
+              <button className="btn-accent-one">hai</button>
+            </Link>
           </>
         ) : (
           <Link href="/signup">
@@ -32,6 +36,4 @@ const NavBar = async () => {
       </nav>
     </section>
   );
-};
-
-export default NavBar;
+}
