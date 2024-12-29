@@ -24,7 +24,7 @@
     "typescript": "^5.7.2"
   },
   "dependencies": {
-    "@hapi/basic": "^7.0.2",
+    "@hapi/cookie": "^12.0.1",
     "bcryptjs": "^2.4.3"
   }
 }

@@ -2,8 +2,8 @@
 import { useInView } from 'react-intersection-observer';
 import React, { useEffect, useState } from 'react';
 import PostCard from '@/components/post-components/PostCard';
-import { PopulatedPostType } from '@/lib/types';
 import axios from 'axios';
+import { PostType } from '@/lib/types';
 
 const fetchPostsData = async (lastDate?: Date) => {
   const res = await axios.get('/api/allPosts', { params: { lastDate } });
@@ -14,18 +14,18 @@ export const DefaultPosts = ({ prevDate }: { prevDate: Date }) => {
   const { ref, inView } = useInView();
 
   const [lastDate, setLastDate] = useState<Date>(prevDate);
-  const [allPosts, setAllPosts] = useState<PopulatedPostType[]>([]);
+  const [allPosts, setAllPosts] = useState<PostType[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
     if (inView) {
-      fetchPostsData(lastDate).then((data: PopulatedPostType[]) => {
+      fetchPostsData(lastDate).then((data: PostType[]) => {
         if (data.length === 0) {
           setLoading(false);
           return;
         }
         setAllPosts((prevPosts) => [...prevPosts, ...data]);
-        setLastDate(data[data.length - 1].createdAt);
+        // setLastDate(data[data.length - 1].createdAt);
       });
     }
   }, [inView, lastDate]);

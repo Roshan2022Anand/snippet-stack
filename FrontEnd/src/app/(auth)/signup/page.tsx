@@ -28,12 +28,16 @@ const page = () => {
     }
 
     try {
-      const res = await axios.post('http://localhost:5000/api/signup', {
-        name,
-        email,
-        password,
-      });
-      console.log(res.data);
+      const res = await axios.post(
+        'http://localhost:5000/api/signup',
+        {
+          name,
+          email,
+          password,
+        },
+        { withCredentials: true }
+      );
+      localStorage.setItem('email', email as string);
       toast.success(res.data.message);
       router.push('/');
     } catch (err: any) {

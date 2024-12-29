@@ -9,6 +9,6 @@
     "outDir": "./dist",
     "rootDir": "./src"
   },
-  "include": ["src","types"],
+  "include": ["src", "types", "hapi-auth.d.ts"],
   "exclude": ["node_modules", "dist"]
 }

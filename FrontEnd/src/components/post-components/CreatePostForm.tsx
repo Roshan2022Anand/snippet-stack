@@ -6,7 +6,7 @@ import { z } from 'zod';
 import { PostFormValidation } from '@/lib/validations';
 import { useRouter } from 'next/navigation';
 import { toast } from 'react-toastify';
-import axios, { AxiosResponse } from 'axios';
+import axios, { Axios, AxiosResponse } from 'axios';
 import { uploadImage } from '@/lib/supabaseStorage';
 
 type postFormType = {
@@ -16,15 +16,17 @@ type postFormType = {
   category: string;
   about: string;
 };
-
 export const createPostApiReq = async (postForm: postFormType) => {
+  const email = localStorage.getItem('email');
   try {
-    const res: AxiosResponse<{ status: number }> = await axios.post(
-      `/api/post`,
-      { postForm }
+    const res: AxiosResponse<{ message: string }> = await axios.post(
+      'http://localhost:5000/api/post',
+      {
+        postForm,
+        email,
+      }
     );
-    if (res.status === 200) return { message: 'Post Created Succesfully' };
-    else return { error: 'Error while creating Post, try again later' };
+    return { message: res.data.message };
   } catch (err) {
     console.log(err);
     return { error: 'Something went wrong, Please try again later' };

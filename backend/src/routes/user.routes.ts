@@ -20,14 +20,12 @@ const userRoutes: ServerRoute[] = [
     method: "GET",
     handler: async (request, h) => {
       try {
-        const { userID } = request.query;
-        const currUser = await pool.query(
-          `SELECT * FROM users u WHERE u.user_id = ${userID}`
-        );
+        //get the user data from session
+        const user = request.auth.credentials;
+        console.log(user);
         return h
           .response({
             message: "User Data Found",
-            userData: currUser.rows[0],
           })
           .code(200);
       } catch (err) {
@@ -35,7 +33,7 @@ const userRoutes: ServerRoute[] = [
       }
     },
   },
-  
+
   //API endpoint to update the user details
   {
     path: "/api/user",
@@ -76,7 +74,8 @@ const userRoutes: ServerRoute[] = [
         const res = await pool.query(
           `DELETE FROM users WHERE user_id = ${userID}`
         );
-        if (res.rowCount) return h.response({message:"Deleted succesfully"}).code(200);
+        if (res.rowCount)
+          return h.response({ message: "Deleted succesfully" }).code(200);
         return h.response("User Not Found").code(404);
       } catch (error) {
         console.log(error);
