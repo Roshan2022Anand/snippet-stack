@@ -3,32 +3,43 @@ import { useInView } from 'react-intersection-observer';
 import React, { useEffect, useState } from 'react';
 import PostCard from '@/components/post-components/PostCard';
 import axios from 'axios';
-import { PostType } from '@/lib/types';
+import { JoinPostUserType } from '@/lib/types';
 
-const fetchPostsData = async (lastDate?: Date) => {
-  const res = await axios.get('/api/allPosts', { params: { lastDate } });
-  return res.data.currPosts;
-};
-
-export const DefaultPosts = ({ prevDate }: { prevDate: Date }) => {
+export const DefaultPosts = ({
+  prevID,
+  query,
+}: {
+  prevID: number;
+  query?: string;
+}) => {
   const { ref, inView } = useInView();
-
-  const [lastDate, setLastDate] = useState<Date>(prevDate);
-  const [allPosts, setAllPosts] = useState<PostType[]>([]);
+  const [lastID, setLastID] = useState<number>(prevID);
+  const [allPosts, setAllPosts] = useState<JoinPostUserType[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
-    if (inView) {
-      fetchPostsData(lastDate).then((data: PostType[]) => {
-        if (data.length === 0) {
-          setLoading(false);
-          return;
+    // Function to show more posts
+    const showMorePosts = async () => {
+      const res = await axios.get(
+        'http://localhost:5000/api/allposts',
+        {
+          params: { query, lastID },
         }
-        setAllPosts((prevPosts) => [...prevPosts, ...data]);
-        // setLastDate(data[data.length - 1].createdAt);
-      });
+      );
+      const posts: JoinPostUserType[] = res.data;
+      if (posts.length === 0) {
+        setLoading(false);
+        return;
+      }
+      setAllPosts((prevPosts) => [...prevPosts, ...posts]);
+      setLastID(posts[posts.length - 1].post_id);
+    };
+
+    //triggered when the loader is in view
+    if (inView) {
+      showMorePosts();
     }
-  }, [inView, lastDate]);
+  }, [inView, lastID]);
 
   return (
     <>

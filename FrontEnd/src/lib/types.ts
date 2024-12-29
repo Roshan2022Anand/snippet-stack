@@ -4,20 +4,23 @@ import { PostFormValidation } from '@/lib/validations';
 export type PostType = {
   post_id: number;
   title: string;
-  post_img: string;
   description: string;
+  image: string;
   about: string;
   category: string;
-  post_views: number;
+  pviews: number;
   upvote: number;
   downvote: number;
+  created_at: Date;
   user_id: number;
 };
 
 export type UserType = {
   user_id: number;
-  name: string;
+  fname: string;
   email: string;
-  image: string;
+  pic: string;
   bio: string;
 };
+
+export type JoinPostUserType = PostType & UserType;

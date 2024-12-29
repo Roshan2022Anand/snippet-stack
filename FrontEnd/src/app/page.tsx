@@ -3,6 +3,8 @@ import SearchBar from '@/components/search-bar-components/SearchBar';
 import NavBar from '@/components/NavBar';
 import PostContainer from '@/components/post-components/PostContainer';
 import { PostContainerSkeliton } from '@/components/Skelitons';
+import { JoinPostUserType, PostType } from '@/lib/types';
+import axios from 'axios';
 
 const Page = async ({
   searchParams,
@@ -10,12 +12,11 @@ const Page = async ({
   searchParams: Promise<{ query?: string }>;
 }) => {
   const query = (await searchParams).query;
-  // const res = await fetch(`${baseUrl}/api/allPosts`, {
-  //   method: 'GET',
-  //   next: { revalidate: 60 },
-  // });
-  // const data = await res.json();
-  // const posts: PopulatedPostType[] | undefined = data.currPosts;
+  const res = await axios.get('http://localhost:5000/api/allposts', {
+    params: { query, lastID: 0 },
+  });
+  const data = res.data;
+  const posts: JoinPostUserType[] | undefined = data;
   return (
     <>
       <header className="w-full">
@@ -25,7 +26,7 @@ const Page = async ({
           <SearchBar query={query} />
         </section>
       </header>
-      {/* <main>
+      <main>
         {posts ? (
           <Suspense fallback={<div>Loading...</div>}>
             <PostContainer query={query} posts={posts} />
@@ -33,7 +34,7 @@ const Page = async ({
         ) : (
           <PostContainerSkeliton />
         )}
-      </main> */}
+      </main>
     </>
   );
 };

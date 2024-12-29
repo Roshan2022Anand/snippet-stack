@@ -3,6 +3,7 @@ import Bcrypt from "bcryptjs";
 import pool from "../configs/dbConfig";
 
 const authRoutes: ServerRoute[] = [
+
   // route for signing up
   {
     path: "/api/signup",
