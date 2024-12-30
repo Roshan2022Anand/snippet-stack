@@ -25,7 +25,7 @@ const PostContainer = async ({
       {posts.map((post, index) => (
         <PostCard key={`initial-${index}`} post={post} />
       ))}
-      <DefaultPosts prevID={posts[3].post_id} query={query}/>
+      <DefaultPosts prevID={posts[posts.length-1].post_id} query={query}/>
     </section>
   );
 };

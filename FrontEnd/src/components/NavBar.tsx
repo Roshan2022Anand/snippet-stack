@@ -3,16 +3,16 @@ import Link from 'next/link';
 import axios from 'axios';
 import Image from 'next/image';
 import { IoIosLogIn, IoMdAdd } from 'react-icons/io';
-import { FaUserAlt } from 'react-icons/fa';
+import { FaGithub, FaUserAlt } from 'react-icons/fa';
 
 export default async function NavBar() {
   // const res = await axios.get('http://localhost:5000/api/auth', {
   //   withCredentials: true,
   // });
-  // console.log(res.headers);
   // const session = res.data.user;
-  // console.log(session);
-  const session = true;
+  // console.log(res.data);
+
+  const session = true
   return (
     <section className="nav-bar">
       <div className="font-bold text-accentPrimary">Logo</div>
@@ -26,11 +26,19 @@ export default async function NavBar() {
             </Link>
           </>
         ) : (
-          <Link href="/signup">
-            <button className="btn-accent-one flex size-[6vw] max-w-[50px] max-h-[50px] items-center justify-center">
-              <FaUserAlt className="size-full" />
-            </button>
-          </Link>
+          <>
+            <Link href="/signup">
+              <button className="btn-accent-one flex size-[6vw] max-w-[50px] max-h-[50px] items-center justify-center">
+                <FaUserAlt className="size-full" />
+              </button>
+            </Link>
+
+            <Link href="http://localhost:5000/api/github/callback">
+              <button className="btn-accent-one flex size-[6vw] max-w-[50px] max-h-[50px] items-center justify-center">
+                <FaGithub />
+              </button>
+            </Link>
+          </>
         )}
       </nav>
     </section>

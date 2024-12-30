@@ -15,8 +15,8 @@ const Page = async ({
   const res = await axios.get('http://localhost:5000/api/allposts', {
     params: { query, lastID: 0 },
   });
-  const data = res.data;
-  const posts: JoinPostUserType[] | undefined = data;
+  const posts: JoinPostUserType[] | undefined = res.data;;
+console.log(posts)
   return (
     <>
       <header className="w-full">

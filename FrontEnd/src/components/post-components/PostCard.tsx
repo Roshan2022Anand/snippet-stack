@@ -31,20 +31,23 @@ const PostCard = ({ post }: { post: JoinPostUserType }) => {
       </header>
 
       <main className="h-[70%]">
-        <Link href={`/view/post/${post.post_id}`} className="size-full flex py-2">
+        <Link
+          href={`/view/post/${post.post_id}`}
+          className="size-full flex py-2"
+        >
           <section className="w-1/2 h-full">
             <p className="md-bold-text">{post.title}</p>
             <p className="sm-light-text">{post.description}</p>
           </section>
           <section className="w-1/2 h-full rounded-lg overflow-hidden">
-            {/* <Image
-              src={post.image}
+            <Image
+              src={`${post.image}`}
               alt={post.title}
-              width={10}
-              height={5}
-              className="w-full rounded-xl"
+              width={200}
+              height={200}
+              className="object-cover w-full rounded-xl"
               loading="lazy"
-            /> */}
+            />
           </section>
         </Link>
       </main>

@@ -1,8 +1,53 @@
+//@ts-nocheck
 import { ServerRoute } from "@hapi/hapi";
 import Bcrypt from "bcryptjs";
 import pool from "../configs/dbConfig";
 
 const authRoutes: ServerRoute[] = [
+  //route to handle github login
+  {
+    method: "GET",
+    path: "/api/github/callback",
+    options: {
+      auth: "github",
+      handler: async (request, h) => {
+        try {
+          const { profile } = request.auth.credentials;
+          if (!profile) {
+            return h.response("Authentication failed").code(401);
+          }
+
+          request.cookieAuth.set({
+            name: profile.displayName || "Unknown",
+            email: profile.email || "No Email",
+          });
+
+
+          return h.redirect(process.env.FRONTEND_URL || "/protected");
+        } catch (err) {
+          console.log(err);
+          return h.response({ error: "Something went wrong" }).code(500);
+        }
+      },
+    },
+  },
+
+  // route for checking if the user is authenticated
+  {
+    path: "/api/auth",
+    method: "GET",
+    options: {
+      auth: "session",
+    },
+    handler: async (request, h) => {
+      const user = request.auth.credentials;
+      console.log(request.auth);
+      if (user) {
+        return h.response({ user }).code(200);
+      }
+      return h.response({ user: null }).code(200);
+    },
+  },
 
   // route for signing up
   {
@@ -79,16 +124,6 @@ const authRoutes: ServerRoute[] = [
       //@ts-ignore
       request.cookieAuth.clear();
       return h.response({ message: "Logged out successfully" }).code(200);
-    },
-  },
-
-  // route for checking if the user is authenticated
-  {
-    path: "/api/auth",
-    method: "GET",
-    handler: async (request, h) => {
-      console.log("hai");
-      h.response({ user: null }).code(200);
     },
   },
 ];
