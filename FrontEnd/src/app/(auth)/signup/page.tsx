@@ -34,8 +34,6 @@ const page = () => {
         password,
         name,
       });
-      console.log('Headers :', document.cookie);
-      localStorage.setItem('email', email as string);
       toast.success(res.data.message);
       router.push('/');
     } catch (err: any) {

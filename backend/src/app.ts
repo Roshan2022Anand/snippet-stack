@@ -18,7 +18,6 @@ const init = async () => {
       cors: {
         origin: [process.env.FRONTEND_URL as string],
         credentials: true,
-        additionalHeaders: ["cookie"],
       },
     },
   });
@@ -41,7 +40,7 @@ const init = async () => {
     // @ts-ignore
     validate: async (request, session) => {
       const email = session.email;
-      const {rows} = await pool.query(
+      const { rows } = await pool.query(
         `SELECT * FROM users u WHERE u.email = $1`,
         [email]
       );

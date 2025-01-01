@@ -2,6 +2,7 @@
 import { ServerRoute } from "@hapi/hapi";
 import Bcrypt from "bcryptjs";
 import pool from "../configs/dbConfig";
+import { error } from "console";
 
 const authRoutes: ServerRoute[] = [
   // route for checking if the user is authenticated
@@ -80,10 +81,12 @@ const authRoutes: ServerRoute[] = [
         );
         const user = rows[0];
 
-        if (!user) return h.response({ message: "Invalid email" }).code(401);
+        if (!user)
+          return h.response({ error: "User Does not exists" }).code(401);
 
         //checking if the password is correct
         const isValid = await Bcrypt.compareSync(password, user.fpassword);
+        
         if (isValid) {
           //setting the cookie
           request.cookieAuth.set({
@@ -93,14 +96,11 @@ const authRoutes: ServerRoute[] = [
           return h.response({ message: "Logged in successfully" }).code(200);
         }
 
-        return h.response({ message: "Invalid password" }).code(401);
+        return h.response({ error: "Invalid password" }).code(401);
       } catch (err) {
         console.log(err);
         return h.response({ error: "Something went wrong" }).code(500);
       }
-    },
-    options: {
-      auth: false,
     },
   },
 
