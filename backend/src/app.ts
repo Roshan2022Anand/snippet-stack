@@ -40,39 +40,21 @@ const init = async () => {
     redirectTo: `${process.env.FRONTEND_URL}/signup`,
     // @ts-ignore
     validate: async (request, session) => {
-      console.log("Session data:", session);
-
-      if (session && session.user) {
-        return { isValid: true, credentials: session };
+      const email = session.email;
+      const {rows} = await pool.query(
+        `SELECT * FROM users u WHERE u.email = $1`,
+        [email]
+      );
+      if (rows[0]) {
+        return { isValid: true, credentials: rows[0] };
       }
       return { isValid: false };
     },
   });
 
   server.auth.default("session");
-  // Register the github auth strategy
-  // server.auth.strategy("github", "bell", {
-  //   provider: "github",
-  //   password: "!wsYhFA*C2U6nz=Bu^X2@2beCem8kSR6",
-  //   clientId: process.env.GITHUB_CLIENT_ID,
-  //   clientSecret: process.env.GITHUB_CLIENT_SECRET,
-  //   isSecure: false,
-  // });
-
 
   await testDbConnection();
-
-  server.route({
-    path: "/",
-    method: "GET",
-    options: {
-      auth: false,
-    },
-    handler: (request, h) => {
-      // console.log(request.auth);
-      return request.auth;
-    },
-  });
 
   // Register the routes
   server.route(userRoutes);

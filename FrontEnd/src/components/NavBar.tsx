@@ -1,24 +1,18 @@
 import React from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { IoIosLogIn, IoMdAdd } from 'react-icons/io';
-import { FaGithub, FaUserAlt } from 'react-icons/fa';
+import { IoMdAdd } from 'react-icons/io';
+import { FaUserAlt } from 'react-icons/fa';
 import { hapiApi } from '@/lib/client-utils';
 import { getCookies } from '@/lib/server-utils';
 
 export default async function NavBar() {
   const sessionValue = await getCookies();
-  let session;
-  try {
-    const res = await hapiApi.get('/api/auth', {
-      headers: { cookie: `${sessionValue}` },
-    });
-    session = res.data.user;
-    console.log(res.data);
-  } catch (err) {
-    console.log(err);
-    session = null;
-  }
+
+  const res = await hapiApi.get('/api/auth', {
+    headers: { cookie: `${sessionValue}` },
+  });
+  const session = res.data.user;
 
   return (
     <section className="nav-bar">
@@ -31,18 +25,18 @@ export default async function NavBar() {
                 <IoMdAdd className="size-full" />
               </button>
             </Link>
+
+            <Link href={`/profile`}>
+              <button className="btn-accent-one flex size-[6vw] max-w-[50px] max-h-[50px] items-center justify-center text-[10px]">
+                {session.fname}
+              </button>
+            </Link>
           </>
         ) : (
           <>
             <Link href="/signup">
               <button className="btn-accent-one flex size-[6vw] max-w-[50px] max-h-[50px] items-center justify-center">
                 <FaUserAlt className="size-full" />
-              </button>
-            </Link>
-
-            <Link href="http://localhost:5000/api/github/callback">
-              <button className="btn-accent-one flex size-[6vw] max-w-[50px] max-h-[50px] items-center justify-center">
-                <FaGithub />
               </button>
             </Link>
           </>

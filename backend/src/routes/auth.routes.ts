@@ -4,43 +4,12 @@ import Bcrypt from "bcryptjs";
 import pool from "../configs/dbConfig";
 
 const authRoutes: ServerRoute[] = [
-  //route to handle github login
-  // {
-  //   method: "GET",
-  //   path: "/api/github/callback",
-  //   options: {
-  //     auth: "github",
-  //     handler: async (request, h) => {
-  //       try {
-  //         const { profile } = request.auth.credentials;
-  //         if (!profile) {
-  //           return h.response("Authentication failed").code(401);
-  //         }
-
-  //         request.cookieAuth.set({
-  //           name: profile.displayName || "Unknown",
-  //           email: profile.email || "No Email",
-  //         });
-
-  //         return h.redirect(process.env.FRONTEND_URL || "/protected");
-  //       } catch (err) {
-  //         console.log(err);
-  //         return h.response({ error: "Something went wrong" }).code(500);
-  //       }
-  //     },
-  //   },
-  // },
-
   // route for checking if the user is authenticated
   {
     path: "/api/auth",
     method: "GET",
-    // options: {
-    //   auth: false,
-    // },
     handler: async (request, h) => {
       const user = request.auth.credentials;
-      console.log(request.headers);
       if (user) {
         return h.response({ user }).code(200);
       }
@@ -77,13 +46,7 @@ const authRoutes: ServerRoute[] = [
           [name, email, hashedPassword]
         );
 
-        request.cookieAuth.set({ user: { name, email } });
-
-        // Log everything after setting cookie
-        console.log("\n=== Login Debug ===");
-        console.log("Request State:", request.state);
-        console.log("Auth:", request.auth);
-        console.log("==================\n");
+        request.cookieAuth.set({ name, email });
 
         return h.response({ message: "Successfully signed up" }).code(200);
       } catch (err) {
@@ -100,20 +63,41 @@ const authRoutes: ServerRoute[] = [
   {
     path: "/api/login",
     method: "GET",
+    options: {
+      auth: false,
+    },
     handler: async (request, h) => {
-      const { email, password } = request.query as {
-        email: string;
-        password: string;
-      };
-      //   const { isValid, credentials } = await validate({ email, password });
+      try {
+        const { email, password } = request.query as {
+          email: string;
+          password: string;
+        };
 
-      //   if (!isValid) {
-      //     return h.response({ message: "Invalid email or password" }).code(401);
-      //   }
+        //checking if the user exists
+        const { rows } = await pool.query(
+          `SELECT * FROM users u WHERE u.email = $1`,
+          [email]
+        );
+        const user = rows[0];
 
-      //   return h
-      //     .response({ message: "Login successful", user: credentials })
-      //     .code(200);
+        if (!user) return h.response({ message: "Invalid email" }).code(401);
+
+        //checking if the password is correct
+        const isValid = await Bcrypt.compareSync(password, user.fpassword);
+        if (isValid) {
+          //setting the cookie
+          request.cookieAuth.set({
+            name: user.fname,
+            email: user.email,
+          });
+          return h.response({ message: "Logged in successfully" }).code(200);
+        }
+
+        return h.response({ message: "Invalid password" }).code(401);
+      } catch (err) {
+        console.log(err);
+        return h.response({ error: "Something went wrong" }).code(500);
+      }
     },
     options: {
       auth: false,
@@ -125,7 +109,6 @@ const authRoutes: ServerRoute[] = [
     path: "/api/logout",
     method: "GET",
     handler: async (request, h) => {
-      //@ts-ignore
       request.cookieAuth.clear();
       return h.response({ message: "Logged out successfully" }).code(200);
     },

@@ -7,8 +7,8 @@ import { UserType } from '@/lib/types';
 import axios from 'axios';
 import { toast } from 'react-toastify';
 
-const UserProfileForm = ({ userData }: { userData: UserType }) => {
-  const { name, bio, image } = userData;
+const UserProfileForm = ({ session }: { session: UserType }) => {
+  const { fname, bio, pic } = session;
   const nameRef = useRef<HTMLInputElement>(null);
   const bioRef = useRef<HTMLInputElement>(null);
 
@@ -20,19 +20,19 @@ const UserProfileForm = ({ userData }: { userData: UserType }) => {
       name: nameRef.current?.value,
       bio: bioRef.current?.value,
     };
-    
-      const res = await axios.put("http://localhost:5000/api/user", {
-        updatedUserData,
-        userID: userData.user_id,
-      });
-      if(res.data.message)toast.success(res.data.message);
-      else if(res.data.error)toast.error(res.data.error);
+
+    const res = await axios.put('http://localhost:5000/api/user', {
+      updatedUserData,
+      userID: session.user_id,
+    });
+    if (res.data.message) toast.success(res.data.message);
+    else if (res.data.error) toast.error(res.data.error);
   };
 
   return (
     <form
       onSubmit={handleSubmit}
-      className="flex flex-col sm:flex-row-reverse  items-center justify-around w-full relative"
+      className="flex flex-col sm:flex-row-reverse  items-center justify-around w-2/3 relative"
     >
       <section className="absolute top-1 right-1 z-10">
         {editState ? (
@@ -54,13 +54,15 @@ const UserProfileForm = ({ userData }: { userData: UserType }) => {
         )}
       </section>
       <section className="relative w-fit">
-        <Image
-          src={`${image}`}
-          alt={`${name}`}
-          width={200}
-          height={200}
-          className="rounded-full border-4 border-accentPrimary"
-        />
+        {pic && (
+          <Image
+            src={`${pic}`}
+            alt={`${fname}`}
+            width={200}
+            height={200}
+            className="rounded-full border-4 border-accentPrimary"
+          />
+        )}
       </section>
       <section className="flex flex-col w-2/3">
         <label>Name</label>
@@ -68,7 +70,7 @@ const UserProfileForm = ({ userData }: { userData: UserType }) => {
           <input
             type="text"
             ref={nameRef}
-            defaultValue={name}
+            defaultValue={fname}
             disabled={!editState}
             className="bg-transparent grow"
           />

@@ -1,7 +1,8 @@
 import { cookies } from 'next/headers';
 
+//function to get the cookies
 export const getCookies = async () => {
-  const cookieStore = (await cookies()).getAll();
-  const session = `${cookieStore[1].name}=${cookieStore[1].value}`; ;
+  const sessionObj= (await cookies()).get('session');
+  const session = `${sessionObj?.name}=${sessionObj?.value}`; ;
   return session;
 };
