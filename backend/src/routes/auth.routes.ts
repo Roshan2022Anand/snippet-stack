@@ -1,15 +1,13 @@
-//@ts-nocheck
-import { ServerRoute } from "@hapi/hapi";
+import { Request, ResponseToolkit, ServerRoute } from "@hapi/hapi";
 import Bcrypt from "bcryptjs";
 import pool from "../configs/dbConfig";
-import { error } from "console";
 
 const authRoutes: ServerRoute[] = [
   // route to get authenticated user details
   {
     path: "/api/auth",
     method: "GET",
-    handler: async (request, h) => {
+    handler: async (request: Request, h: ResponseToolkit) => {
       const user = request.auth.credentials;
       if (user) {
         return h.response({ user }).code(200);
@@ -22,7 +20,7 @@ const authRoutes: ServerRoute[] = [
   {
     path: "/api/signup",
     method: "POST",
-    handler: async (request, h) => {
+    handler: async (request: Request, h: ResponseToolkit) => {
       try {
         const { name, email, password } = request.payload as {
           name: string;
@@ -47,6 +45,7 @@ const authRoutes: ServerRoute[] = [
           [name, email, hashedPassword]
         );
 
+        //@ts-ignore
         request.cookieAuth.set({ name, email });
 
         return h.response({ message: "Successfully signed up" }).code(200);
@@ -67,7 +66,7 @@ const authRoutes: ServerRoute[] = [
     options: {
       auth: false,
     },
-    handler: async (request, h) => {
+    handler: async (request: Request, h: ResponseToolkit) => {
       try {
         const { email, password } = request.query as {
           email: string;
@@ -88,7 +87,7 @@ const authRoutes: ServerRoute[] = [
         const isValid = await Bcrypt.compareSync(password, user.fpassword);
 
         if (isValid) {
-          //setting the cookie
+          //@ts-ignore
           request.cookieAuth.set({
             name: user.fname,
             email: user.email,
@@ -108,7 +107,8 @@ const authRoutes: ServerRoute[] = [
   {
     path: "/api/logout",
     method: "GET",
-    handler: async (request, h) => {
+    handler: async (request: Request, h: ResponseToolkit) => {
+      //@ts-ignore
       request.cookieAuth.clear();
       return h.response({ message: "Logged out successfully" }).code(200);
     },

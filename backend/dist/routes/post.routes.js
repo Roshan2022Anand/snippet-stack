@@ -17,7 +17,14 @@ const postRoute = [
                 if (!existsUser.rows[0])
                     return h.response({ error: "User does not exists" }).code(404);
                 //if user exists then store the post in DB
-                await dbConfig_1.default.query(`INSERT INTO posts (title, description, image, about,category, user_id) VALUES ($1, $2, $3, $4, $5, $6)`, [title, description, image, about, category, existsUser.rows[0].user_id]);
+                await dbConfig_1.default.query(`INSERT INTO posts (title, description, image, about,category, user_id) VALUES ($1, $2, $3, $4, $5, $6)`, [
+                    title,
+                    description,
+                    image,
+                    about,
+                    category,
+                    existsUser.rows[0].user_id,
+                ]);
                 return h.response({ message: "Post created successfully" }).code(200);
             }
             catch (err) {
@@ -83,6 +90,6 @@ const postRoute = [
         },
     },
     //route to delete a post
-    { path: "/api/post/", method: "DELETE", handler: async (request, h) => { } },
+    // { path: "/api/post/", method: "DELETE", handler: async (request, h) => {} },
 ];
 exports.default = postRoute;

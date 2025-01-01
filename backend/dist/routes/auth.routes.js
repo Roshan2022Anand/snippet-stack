@@ -33,6 +33,7 @@ const authRoutes = [
                 const hashedPassword = await bcryptjs_1.default.hash(password, 10);
                 await dbConfig_1.default.query(`INSERT INTO users (fname, email, fpassword)
                      VALUES ($1, $2, $3)`, [name, email, hashedPassword]);
+                //@ts-ignore
                 request.cookieAuth.set({ name, email });
                 return h.response({ message: "Successfully signed up" }).code(200);
             }
@@ -63,7 +64,7 @@ const authRoutes = [
                 //checking if the password is correct
                 const isValid = await bcryptjs_1.default.compareSync(password, user.fpassword);
                 if (isValid) {
-                    //setting the cookie
+                    //@ts-ignore
                     request.cookieAuth.set({
                         name: user.fname,
                         email: user.email,
@@ -83,6 +84,7 @@ const authRoutes = [
         path: "/api/logout",
         method: "GET",
         handler: async (request, h) => {
+            //@ts-ignore
             request.cookieAuth.clear();
             return h.response({ message: "Logged out successfully" }).code(200);
         },

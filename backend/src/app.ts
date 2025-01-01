@@ -1,10 +1,13 @@
-import Hapi from "@hapi/hapi";
-import testDbConnection from "./tests/connectDbTest";
-import userRoutes from "./routes/user.routes";
-import authRoutes from "./routes/auth.routes";
-import postRoute from "./routes/post.routes";
-import pool from "./configs/dbConfig";
+import { ResponseToolkit } from "@hapi/hapi";
+
 const Cookie = require("@hapi/cookie");
+const Hapi = require("@hapi/hapi");
+const testDbConnection = require("./tests/connectDbTest");
+const userRoutes = require("./routes/user.routes");
+const authRoutes = require("./routes/auth.routes");
+const postRoute = require("./routes/post.routes");
+const pool = require("./configs/dbConfig");
+const dotenv = require("dotenv");
 
 // Create a new server instance
 const init = async () => {
@@ -13,7 +16,9 @@ const init = async () => {
     host: "localhost",
     routes: {
       cors: {
-        origin: [process.env.FRONTEND_URL as string],
+
+        //origin from env file FRONTEND_URL
+        origin: [process.env.FRONTEND_URL],
         credentials: true,
       },
     },
@@ -56,7 +61,7 @@ const init = async () => {
     options: {
       auth: false,
     },
-    handler: (request, h) => {
+    handler: (request:Request, h:ResponseToolkit) => {
       return "Backend is working";
     },
   });

@@ -1,12 +1,6 @@
 import { ServerRoute } from "@hapi/hapi";
 import pool from "../configs/dbConfig";
-import { error } from "console";
-
-type userPostPayload = {
-  email: string;
-  name: string;
-  image: string;
-};
+import { Request, ResponseToolkit } from "@hapi/hapi";
 
 type userPutPayload = {
   updatedUserData: { name: string; bio: string };
@@ -19,7 +13,7 @@ const userRoutes: ServerRoute[] = [
   {
     path: "/api/user",
     method: "GET",
-    handler: async (request, h) => {
+    handler: async (request: Request, h: ResponseToolkit) => {
       try {
         //get the user data from session
         const user = request.auth.credentials;
@@ -39,7 +33,7 @@ const userRoutes: ServerRoute[] = [
   {
     path: "/api/user",
     method: "PUT",
-    handler: async (request, h) => {
+    handler: async (request: Request, h: ResponseToolkit) => {
       try {
         const { updatedUserData, userID }: userPutPayload =
           request.payload as userPutPayload;
@@ -69,7 +63,7 @@ const userRoutes: ServerRoute[] = [
   {
     path: "/api/user",
     method: "DELETE",
-    handler: async (request, h) => {
+    handler: async (request: Request, h: ResponseToolkit) => {
       try {
         const { user_id } = request.auth.credentials;
         const res = await pool.query(

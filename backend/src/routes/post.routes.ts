@@ -1,4 +1,4 @@
-import { ServerRoute } from "@hapi/hapi";
+import { Request, ResponseToolkit, ServerRoute } from "@hapi/hapi";
 import pool from "../configs/dbConfig";
 
 type postData = {
@@ -17,7 +17,7 @@ const postRoute: ServerRoute[] = [
   {
     path: "/api/post",
     method: "POST",
-    handler: async (request, h) => {
+    handler: async (request: Request, h: ResponseToolkit) => {
       try {
         const {
           postForm: { title, description, image, category, about },
@@ -34,7 +34,14 @@ const postRoute: ServerRoute[] = [
         //if user exists then store the post in DB
         await pool.query(
           `INSERT INTO posts (title, description, image, about,category, user_id) VALUES ($1, $2, $3, $4, $5, $6)`,
-          [title, description, image, about, category, existsUser.rows[0].user_id]
+          [
+            title,
+            description,
+            image,
+            about,
+            category,
+            existsUser.rows[0].user_id,
+          ]
         );
 
         return h.response({ message: "Post created successfully" }).code(200);
@@ -52,7 +59,7 @@ const postRoute: ServerRoute[] = [
     options: {
       auth: false,
     },
-    handler: async (request, h) => {
+    handler: async (request: Request, h: ResponseToolkit) => {
       try {
         const { query, lastID } = request.query;
         let posts;
@@ -87,7 +94,7 @@ const postRoute: ServerRoute[] = [
   {
     path: "/api/post",
     method: "GET",
-    handler: async (request, h) => {
+    handler: async (request: Request, h: ResponseToolkit) => {
       try {
         const { postId } = request.query as { postId: string };
         const { rows } = await pool.query(
@@ -106,7 +113,7 @@ const postRoute: ServerRoute[] = [
   },
 
   //route to delete a post
-  { path: "/api/post/", method: "DELETE", handler: async (request, h) => {} },
+  // { path: "/api/post/", method: "DELETE", handler: async (request, h) => {} },
 ];
 
 export default postRoute;
