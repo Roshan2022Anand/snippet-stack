@@ -1,18 +1,25 @@
 import React from 'react';
 import Link from 'next/link';
-import axios from 'axios';
 import Image from 'next/image';
 import { IoIosLogIn, IoMdAdd } from 'react-icons/io';
 import { FaGithub, FaUserAlt } from 'react-icons/fa';
+import { hapiApi } from '@/lib/client-utils';
+import { getCookies } from '@/lib/server-utils';
 
 export default async function NavBar() {
-  // const res = await axios.get('http://localhost:5000/api/auth', {
-  //   withCredentials: true,
-  // });
-  // const session = res.data.user;
-  // console.log(res.data);
+  const sessionValue = await getCookies();
+  let session;
+  try {
+    const res = await hapiApi.get('/api/auth', {
+      headers: { cookie: `${sessionValue}` },
+    });
+    session = res.data.user;
+    console.log(res.data);
+  } catch (err) {
+    console.log(err);
+    session = null;
+  }
 
-  const session = true
   return (
     <section className="nav-bar">
       <div className="font-bold text-accentPrimary">Logo</div>

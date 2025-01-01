@@ -5,6 +5,7 @@ import PostContainer from '@/components/post-components/PostContainer';
 import { PostContainerSkeliton } from '@/components/Skelitons';
 import { JoinPostUserType, PostType } from '@/lib/types';
 import axios from 'axios';
+import { hapiApi } from '@/lib/client-utils';
 
 const Page = async ({
   searchParams,
@@ -12,11 +13,13 @@ const Page = async ({
   searchParams: Promise<{ query?: string }>;
 }) => {
   const query = (await searchParams).query;
-  const res = await axios.get('http://localhost:5000/api/allposts', {
+  const res = await hapiApi.get('/api/allposts', {
     params: { query, lastID: 0 },
   });
-  const posts: JoinPostUserType[] | undefined = res.data;;
-console.log(posts)
+  const posts: JoinPostUserType[] | undefined = res.data;
+
+  if (!posts) return <div>loading...</div>;
+  
   return (
     <>
       <header className="w-full">

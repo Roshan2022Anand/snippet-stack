@@ -5,6 +5,7 @@ import { redirect } from 'next/navigation';
 import React, { useState } from 'react';
 import { toast } from 'react-toastify';
 import { useRouter } from 'next/navigation';
+import { hapiApi } from '@/lib/client-utils';
 
 const page = () => {
   const router = useRouter();
@@ -28,15 +29,12 @@ const page = () => {
     }
 
     try {
-      const res = await axios.post(
-        'http://localhost:5000/api/signup',
-        {
-          name,
-          email,
-          password,
-        },
-        { withCredentials: true }
-      );
+      const res = await hapiApi.post(`/api/signup`, {
+        email,
+        password,
+        name,
+      });
+      console.log('Headers :', document.cookie);
       localStorage.setItem('email', email as string);
       toast.success(res.data.message);
       router.push('/');

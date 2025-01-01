@@ -1,12 +1,16 @@
 import React from 'react';
 import Link from 'next/link';
 import axios from 'axios';
-import { JoinPostUserType, PostType } from '@/lib/types';
+import { JoinPostUserType } from '@/lib/types';
 import { FaArrowRight } from 'react-icons/fa';
-import { getBaseUrl } from '@/lib/server-utilis';
 import { formatDate } from '@/lib/client-utils';
 import Image from 'next/image';
 import MarkdownIt from 'markdown-it';
+import {
+  CommentSection,
+  ViewsSection,
+  VoteSection,
+} from '@/components/post-components/PostCardButtons';
 
 const Page = async ({ params }: { params: Promise<{ id: string }> }) => {
   const postId = (await params).id;
@@ -70,16 +74,20 @@ const Page = async ({ params }: { params: Promise<{ id: string }> }) => {
         </section>
       </header>
 
-      <main className="px-3">
-        <section className="rounded-md bg-slate-200 px-1">
-          {htmlOutput && (
-            <article
-              className="prose"
-              dangerouslySetInnerHTML={{ __html: htmlOutput }}
-            ></article>
-          )}
-        </section>
+      <main className="px-3 rounded-md bg-slate-200 mx-2">
+        {htmlOutput && (
+          <article
+            className="prose"
+            dangerouslySetInnerHTML={{ __html: htmlOutput }}
+          ></article>
+        )}
       </main>
+
+      <footer className="h-[50px] w-2/3 flex justify-center gap-3 m-2">
+        <VoteSection />
+        <CommentSection />
+        <ViewsSection />
+      </footer>
     </>
   );
 };

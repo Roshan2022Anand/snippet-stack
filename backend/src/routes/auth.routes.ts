@@ -5,43 +5,42 @@ import pool from "../configs/dbConfig";
 
 const authRoutes: ServerRoute[] = [
   //route to handle github login
-  {
-    method: "GET",
-    path: "/api/github/callback",
-    options: {
-      auth: "github",
-      handler: async (request, h) => {
-        try {
-          const { profile } = request.auth.credentials;
-          if (!profile) {
-            return h.response("Authentication failed").code(401);
-          }
+  // {
+  //   method: "GET",
+  //   path: "/api/github/callback",
+  //   options: {
+  //     auth: "github",
+  //     handler: async (request, h) => {
+  //       try {
+  //         const { profile } = request.auth.credentials;
+  //         if (!profile) {
+  //           return h.response("Authentication failed").code(401);
+  //         }
 
-          request.cookieAuth.set({
-            name: profile.displayName || "Unknown",
-            email: profile.email || "No Email",
-          });
+  //         request.cookieAuth.set({
+  //           name: profile.displayName || "Unknown",
+  //           email: profile.email || "No Email",
+  //         });
 
-
-          return h.redirect(process.env.FRONTEND_URL || "/protected");
-        } catch (err) {
-          console.log(err);
-          return h.response({ error: "Something went wrong" }).code(500);
-        }
-      },
-    },
-  },
+  //         return h.redirect(process.env.FRONTEND_URL || "/protected");
+  //       } catch (err) {
+  //         console.log(err);
+  //         return h.response({ error: "Something went wrong" }).code(500);
+  //       }
+  //     },
+  //   },
+  // },
 
   // route for checking if the user is authenticated
   {
     path: "/api/auth",
     method: "GET",
-    options: {
-      auth: "session",
-    },
+    // options: {
+    //   auth: false,
+    // },
     handler: async (request, h) => {
       const user = request.auth.credentials;
-      console.log(request.auth);
+      console.log(request.headers);
       if (user) {
         return h.response({ user }).code(200);
       }
@@ -78,8 +77,13 @@ const authRoutes: ServerRoute[] = [
           [name, email, hashedPassword]
         );
 
-        // @ts-ignore
-        // request.cookieAuth.set({ name, email });
+        request.cookieAuth.set({ user: { name, email } });
+
+        // Log everything after setting cookie
+        console.log("\n=== Login Debug ===");
+        console.log("Request State:", request.state);
+        console.log("Auth:", request.auth);
+        console.log("==================\n");
 
         return h.response({ message: "Successfully signed up" }).code(200);
       } catch (err) {

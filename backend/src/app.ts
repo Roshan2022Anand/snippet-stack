@@ -5,10 +5,9 @@ import authRoutes from "./routes/auth.routes";
 import Bcrypt from "bcryptjs";
 import postRoute from "./routes/post.routes";
 import pool from "./configs/dbConfig";
+import path from "path";
 const Bell = require("@hapi/bell");
 const Cookie = require("@hapi/cookie");
-
-// const Cookie = require("@hapi/cookie");
 
 // Create a new server instance
 const init = async () => {
@@ -17,8 +16,9 @@ const init = async () => {
     host: "localhost",
     routes: {
       cors: {
-        origin: ["http://localhost:3000"],
+        origin: [process.env.FRONTEND_URL as string],
         credentials: true,
+        additionalHeaders: ["cookie"],
       },
     },
   });
@@ -33,30 +33,32 @@ const init = async () => {
       name: "session",
       password: "!wsYhFA*C2U6nz=Bu^X2@2beCem8kSR6",
       isSecure: false,
+      ttl: 24 * 60 * 60 * 1000,
+      path: "/",
+      isSameSite: "Lax",
     },
-    redirectTo: "http://localhost:5000",
-    //@ts-ignore
+    redirectTo: `${process.env.FRONTEND_URL}/signup`,
+    // @ts-ignore
     validate: async (request, session) => {
       console.log("Session data:", session);
-      console.log("User credentials:", request.auth.credentials);
 
-      if (session && session.name && session.email) {
-        return { valid: true, credentials: session };
+      if (session && session.user) {
+        return { isValid: true, credentials: session };
       }
-      return { valid: false };
+      return { isValid: false };
     },
   });
 
+  server.auth.default("session");
   // Register the github auth strategy
-  server.auth.strategy("github", "bell", {
-    provider: "github",
-    password: "!wsYhFA*C2U6nz=Bu^X2@2beCem8kSR6",
-    clientId: process.env.GITHUB_CLIENT_ID,
-    clientSecret: process.env.GITHUB_CLIENT_SECRET,
-    isSecure: false,
-  });
+  // server.auth.strategy("github", "bell", {
+  //   provider: "github",
+  //   password: "!wsYhFA*C2U6nz=Bu^X2@2beCem8kSR6",
+  //   clientId: process.env.GITHUB_CLIENT_ID,
+  //   clientSecret: process.env.GITHUB_CLIENT_SECRET,
+  //   isSecure: false,
+  // });
 
-  // server.auth.default("session");
 
   await testDbConnection();
 

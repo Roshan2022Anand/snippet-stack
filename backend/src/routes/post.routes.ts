@@ -75,7 +75,6 @@ const postRoute: ServerRoute[] = [
             posts = rows;
           }
         }
-        console.log(posts)
         return h.response(posts).code(200);
       } catch (err) {
         console.log(err);
