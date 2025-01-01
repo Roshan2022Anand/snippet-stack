@@ -2,11 +2,8 @@ import Hapi from "@hapi/hapi";
 import testDbConnection from "./tests/connectDbTest";
 import userRoutes from "./routes/user.routes";
 import authRoutes from "./routes/auth.routes";
-import Bcrypt from "bcryptjs";
 import postRoute from "./routes/post.routes";
 import pool from "./configs/dbConfig";
-import path from "path";
-const Bell = require("@hapi/bell");
 const Cookie = require("@hapi/cookie");
 
 // Create a new server instance
@@ -23,7 +20,6 @@ const init = async () => {
   });
 
   // Register the bell strategy
-  await server.register(Bell);
   await server.register(Cookie);
 
   // Register the cookie auth strategy
@@ -50,10 +46,20 @@ const init = async () => {
       return { isValid: false };
     },
   });
-
   server.auth.default("session");
 
   await testDbConnection();
+
+  server.route({
+    path: "/",
+    method: "GET",
+    options: {
+      auth: false,
+    },
+    handler: (request, h) => {
+      return "Backend is working";
+    },
+  });
 
   // Register the routes
   server.route(userRoutes);
