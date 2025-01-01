@@ -1,13 +1,12 @@
 'use client';
-import axios from 'axios';
 import Link from 'next/link';
-import { redirect } from 'next/navigation';
 import React, { useState } from 'react';
 import { toast } from 'react-toastify';
 import { useRouter } from 'next/navigation';
 import { hapiApi } from '@/lib/client-utils';
+import axios from 'axios';
 
-const page = () => {
+const Page = () => {
   const router = useRouter();
   const [err, seterr] = useState<{ isErr: boolean; msg: string }>({
     isErr: false,
@@ -36,8 +35,8 @@ const page = () => {
       });
       toast.success(res.data.message);
       router.push('/');
-    } catch (err: any) {
-      toast.error(err.response.data.error);
+    } catch (err) {
+      if (axios.isAxiosError(err)) toast.error(err.response?.data.error);
     }
   };
 
@@ -106,4 +105,4 @@ const page = () => {
   );
 };
 
-export default page;
+export default Page;

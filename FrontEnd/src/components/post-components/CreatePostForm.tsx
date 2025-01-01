@@ -6,7 +6,7 @@ import { z } from 'zod';
 import { PostFormValidation } from '@/lib/validations';
 import { useRouter } from 'next/navigation';
 import { toast } from 'react-toastify';
-import axios, { Axios, AxiosResponse } from 'axios';
+import axios, { AxiosResponse } from 'axios';
 import { uploadImage } from '@/lib/supabaseStorage';
 
 type postFormType = {

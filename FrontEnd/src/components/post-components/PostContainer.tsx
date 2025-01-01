@@ -1,7 +1,7 @@
 import React from 'react';
 import { DefaultPosts } from '@/components/post-components/InfiniteScrolling';
 import PostCard from '@/components/post-components/PostCard';
-import { JoinPostUserType, PostType } from '@/lib/types';
+import { JoinPostUserType} from '@/lib/types';
 
 const PostContainer = async ({
   query,

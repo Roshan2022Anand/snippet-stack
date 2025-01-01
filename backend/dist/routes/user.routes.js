@@ -57,15 +57,19 @@ const userRoutes = [
         method: "DELETE",
         handler: async (request, h) => {
             try {
-                const { userID } = request.query;
-                const res = await dbConfig_1.default.query(`DELETE FROM users WHERE user_id = ${userID}`);
+                const { user_id } = request.auth.credentials;
+                const res = await dbConfig_1.default.query(`DELETE FROM users WHERE user_id = ${user_id}`);
+                //@ts-ignore
+                request.cookieAuth.clear();
                 if (res.rowCount)
-                    return h.response({ message: "Deleted succesfully" }).code(200);
-                return h.response("User Not Found").code(404);
+                    return h
+                        .response({ message: "Account Deleted succesfully" })
+                        .code(200);
+                return h.response({ error: "User Not Found" }).code(404);
             }
             catch (error) {
                 console.log(error);
-                return h.response("internal error").code(500);
+                return h.response({ error: "internal error" }).code(500);
             }
         },
     },

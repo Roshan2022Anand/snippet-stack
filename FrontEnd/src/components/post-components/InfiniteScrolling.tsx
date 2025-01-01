@@ -20,12 +20,9 @@ export const DefaultPosts = ({
   useEffect(() => {
     // Function to show more posts
     const showMorePosts = async () => {
-      const res = await axios.get(
-        'http://localhost:5000/api/allposts',
-        {
-          params: { query, lastID },
-        }
-      );
+      const res = await axios.get('http://localhost:5000/api/allposts', {
+        params: { query, lastID },
+      });
       const posts: JoinPostUserType[] = res.data;
       if (posts.length === 0) {
         setLoading(false);
@@ -39,7 +36,7 @@ export const DefaultPosts = ({
     if (inView) {
       showMorePosts();
     }
-  }, [inView, lastID]);
+  }, [inView, lastID, query]);
 
   return (
     <>

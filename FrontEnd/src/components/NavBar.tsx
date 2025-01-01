@@ -1,6 +1,5 @@
 import React from 'react';
 import Link from 'next/link';
-import Image from 'next/image';
 import { IoMdAdd } from 'react-icons/io';
 import { FaUserAlt } from 'react-icons/fa';
 import { hapiApi } from '@/lib/client-utils';

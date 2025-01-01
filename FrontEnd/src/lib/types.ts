@@ -1,5 +1,3 @@
-import { z } from 'zod';
-import { PostFormValidation } from '@/lib/validations';
 
 export type PostType = {
   post_id: number;

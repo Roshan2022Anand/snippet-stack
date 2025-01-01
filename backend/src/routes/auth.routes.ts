@@ -5,7 +5,7 @@ import pool from "../configs/dbConfig";
 import { error } from "console";
 
 const authRoutes: ServerRoute[] = [
-  // route for checking if the user is authenticated
+  // route to get authenticated user details
   {
     path: "/api/auth",
     method: "GET",
@@ -86,7 +86,7 @@ const authRoutes: ServerRoute[] = [
 
         //checking if the password is correct
         const isValid = await Bcrypt.compareSync(password, user.fpassword);
-        
+
         if (isValid) {
           //setting the cookie
           request.cookieAuth.set({

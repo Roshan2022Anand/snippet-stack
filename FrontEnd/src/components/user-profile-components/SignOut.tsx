@@ -1,7 +1,6 @@
 'use client';
 import { hapiApi } from '@/lib/client-utils';
-import { getCookies } from '@/lib/server-utils';
-import Form from 'next/form';
+import axios from 'axios';
 import { redirect } from 'next/navigation';
 import React from 'react';
 import { toast } from 'react-toastify';
@@ -16,14 +15,14 @@ const SignOut = () => {
   };
 
   const handleDelete = async () => {
-      try{
-        const res = await hapiApi.delete('api/user');
-        if (res.data.message) {
-          toast.success(res.data.message);
-        //   redirect('/');
-        }
-    }catch(err:any){
-      console.log(err.response.data.error);
+    try {
+      const res = await hapiApi.delete('api/user');
+      if (res.data.message) {
+        toast.success(res.data.message);
+          redirect('/');
+      }
+    } catch (err) {
+      if (axios.isAxiosError(err)) console.log(err.response?.data.error);
     }
   };
 

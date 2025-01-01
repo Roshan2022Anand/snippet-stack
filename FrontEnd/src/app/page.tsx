@@ -3,8 +3,7 @@ import SearchBar from '@/components/search-bar-components/SearchBar';
 import NavBar from '@/components/NavBar';
 import PostContainer from '@/components/post-components/PostContainer';
 import { PostContainerSkeliton } from '@/components/Skelitons';
-import { JoinPostUserType, PostType } from '@/lib/types';
-import axios from 'axios';
+import { JoinPostUserType } from '@/lib/types';
 import { hapiApi } from '@/lib/client-utils';
 
 const Page = async ({
@@ -19,7 +18,7 @@ const Page = async ({
   const posts: JoinPostUserType[] | undefined = res.data;
 
   if (!posts) return <div>loading...</div>;
-  
+
   return (
     <>
       <header className="w-full">

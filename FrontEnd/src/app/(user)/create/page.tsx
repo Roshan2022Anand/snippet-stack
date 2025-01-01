@@ -1,6 +1,5 @@
 import React from 'react';
 import CreatePostForm from '@/components/post-components/CreatePostForm';
-import { redirect } from 'next/navigation';
 import { FaArrowRightFromBracket } from 'react-icons/fa6';
 import Link from 'next/link';
 

@@ -27,7 +27,6 @@
     "@hapi/bell": "^13.0.2",
     "@hapi/cookie": "^12.0.1",
     "@neondatabase/serverless": "^0.10.4",
-    "@types/hapi__hapi": "^21.0.0",
     "bcryptjs": "^2.4.3"
   }
 }
