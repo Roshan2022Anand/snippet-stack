@@ -2,62 +2,37 @@ import { ServerRoute } from "@hapi/hapi";
 import pool from "../configs/dbConfig";
 import { Request, ResponseToolkit } from "@hapi/hapi";
 
-type userPutPayload = {
-  updatedUserData: { name: string; bio: string };
-  userID: number;
-};
-
 //Routes for all User operations
 const userRoutes: ServerRoute[] = [
-  //API endpoint to read the details of user
-  {
-    path: "/api/user",
-    method: "GET",
-    handler: async (request: Request, h: ResponseToolkit) => {
-      try {
-        //get the user data from session
-        const user = request.auth.credentials;
-        console.log(user);
-        return h
-          .response({
-            message: "User Data Found",
-          })
-          .code(200);
-      } catch (err) {
-        return h.response("internal error").code(500);
-      }
-    },
-  },
-
   //API endpoint to update the user details
-  {
-    path: "/api/user",
-    method: "PUT",
-    handler: async (request: Request, h: ResponseToolkit) => {
-      try {
-        const { updatedUserData, userID }: userPutPayload =
-          request.payload as userPutPayload;
-        const res = await pool.query(
-          `UPDATE users SET name = '${updatedUserData.name}', bio = '${updatedUserData.bio}' WHERE user_id = ${userID}`
-        );
-        if (res.rowCount)
-          return h
-            .response({ message: "User Data Updated Successfully" })
-            .code(200);
+  // {
+  //   path: "/api/user",
+  //   method: "PUT",
+  //   handler: async (request: Request, h: ResponseToolkit) => {
+  //     try {
+  //       const { updatedUserData, userID }: userPutPayload =
+  //         request.payload as userPutPayload;
+  //       const res = await pool.query(
+  //         `UPDATE users SET name = '${updatedUserData.name}', bio = '${updatedUserData.bio}' WHERE user_id = ${userID}`
+  //       );
+  //       if (res.rowCount)
+  //         return h
+  //           .response({ message: "User Data Updated Successfully" })
+  //           .code(200);
 
-        return h
-          .response({ message: "User Data Not Updated, Please try again" })
-          .code(200);
-      } catch (err) {
-        return h
-          .response({
-            error:
-              "Something went wrong in server, Please update after sometimes",
-          })
-          .code(500);
-      }
-    },
-  },
+  //       return h
+  //         .response({ message: "User Data Not Updated, Please try again" })
+  //         .code(200);
+  //     } catch (err) {
+  //       return h
+  //         .response({
+  //           error:
+  //             "Something went wrong in server, Please update after sometimes",
+  //         })
+  //         .code(500);
+  //     }
+  //   },
+  // },
 
   //API endpoint to delete the user
   {

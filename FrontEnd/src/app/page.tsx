@@ -12,12 +12,18 @@ const Page = async ({
   searchParams: Promise<{ query?: string }>;
 }) => {
   const query = (await searchParams).query;
-  const res = await hapiApi.get('/api/allposts', {
-    params: { query, lastID: 0 },
-  });
-  const posts: JoinPostUserType[] | undefined = res.data;
 
-  if (!posts) return <div>loading...</div>;
+  //fetching all the posts
+  let posts: JoinPostUserType[] | undefined;
+  try {
+    const res = await hapiApi.get('/api/allposts', {
+      params: { query, lastID: 0 },
+    });
+    posts = res.data;
+  } catch (err) {
+    console.log(err);
+    return <div>Something went wrong, Please try again</div>;
+  }
 
   return (
     <>

@@ -1,9 +1,8 @@
 import React from 'react';
 import Link from 'next/link';
-import axios from 'axios';
 import { JoinPostUserType } from '@/lib/types';
 import { FaArrowRight } from 'react-icons/fa';
-import { formatDate } from '@/lib/client-utils';
+import { formatDate, hapiApi } from '@/lib/client-utils';
 import Image from 'next/image';
 import MarkdownIt from 'markdown-it';
 import {
@@ -11,18 +10,22 @@ import {
   ViewsSection,
   VoteSection,
 } from '@/components/post-components/PostCardButtons';
+import { getCookies } from '@/lib/server-utils';
 
 const Page = async ({ params }: { params: Promise<{ id: string }> }) => {
   const postId = (await params).id;
 
-  const res = await axios.get(`${process.env.BACKEND_URI}/api/post`, {
+  const sessionValue = await getCookies();
+
+  //fetching the post based on postId
+  const res = await hapiApi.get('/api/post', {
+    headers: { cookie: `${sessionValue}` },
     params: { postId },
   });
   const { postData }: { postData: JoinPostUserType } = res.data;
 
   //parsing the markdown content
   const md = new MarkdownIt();
-
   const htmlOutput = md.render(postData.about);
 
   return (
@@ -31,7 +34,9 @@ const Page = async ({ params }: { params: Promise<{ id: string }> }) => {
         <nav className="nav-bar">
           <div>Logo</div>
           <Link href="/">
+          <button className='btn-accent-one flex size-[6vw] max-w-[50px] max-h-[50px] items-center justify-center'>
             <FaArrowRight />
+          </button>
           </Link>
         </nav>
 
@@ -47,12 +52,7 @@ const Page = async ({ params }: { params: Promise<{ id: string }> }) => {
 
             {/* user profile */}
             <section className="flex">
-              <div>
-                <h3 className="sm-bold-text">{postData.fname}</h3>
-                <p className="sm-light-text opacity-85">
-                  {formatDate(postData.created_at)}
-                </p>
-              </div>
+              <h3 className="sm-bold-text text-[3vw]">{postData.fname}</h3>
               {postData.pic && (
                 <Image
                   src={`${postData.pic}`}

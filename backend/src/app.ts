@@ -1,23 +1,20 @@
-import { ResponseToolkit } from "@hapi/hapi";
+import { Request, ResponseToolkit } from "@hapi/hapi";
+import testDbConnection from "./tests/connectDbTest";
+import userRoutes from "./routes/user.routes";
+import authRoutes from "./routes/auth.routes";
+import postRoute from "./routes/post.routes";
+import pool from "./configs/dbConfig";
 
 const Cookie = require("@hapi/cookie");
 const Hapi = require("@hapi/hapi");
-const testDbConnection = require("./tests/connectDbTest");
-const userRoutes = require("./routes/user.routes");
-const authRoutes = require("./routes/auth.routes");
-const postRoute = require("./routes/post.routes");
-const pool = require("./configs/dbConfig");
-const dotenv = require("dotenv");
 
-// Create a new server instance
 const init = async () => {
+  // Defining the server configuration with CORS
   const server = Hapi.server({
     port: 5000,
     host: "localhost",
     routes: {
       cors: {
-
-        //origin from env file FRONTEND_URL
         origin: [process.env.FRONTEND_URL],
         credentials: true,
       },
@@ -55,13 +52,14 @@ const init = async () => {
 
   await testDbConnection();
 
+  //entry point to check if server is running
   server.route({
     path: "/",
     method: "GET",
     options: {
       auth: false,
     },
-    handler: (request:Request, h:ResponseToolkit) => {
+    handler: (request: Request, h: ResponseToolkit) => {
       return "Backend is working";
     },
   });

@@ -23,17 +23,3 @@ export const uploadImage = async (file:File) => {
 
   return publicUrl;
 };
-
-//function to get all images
-export const getImages = async () => {
-  const { data, error } = await supabase.storage
-    .from('images') // Replace 'images' with your bucket name
-    .list();
-
-  if (error) {
-    console.error('Error retrieving files:', error.message);
-    return [];
-  }
-
-  return data; // Returns an array of file objects
-};

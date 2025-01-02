@@ -9,7 +9,6 @@ type postData = {
     category: string;
     about: string;
   };
-  email: string;
 };
 
 const postRoute: ServerRoute[] = [
@@ -19,32 +18,43 @@ const postRoute: ServerRoute[] = [
     method: "POST",
     handler: async (request: Request, h: ResponseToolkit) => {
       try {
+        const { user_id } = request.auth.credentials;
+
         const {
           postForm: { title, description, image, category, about },
-          email,
         } = request.payload as postData;
-        //checking if the user already exists
-        const existsUser = await pool.query(
-          `SELECT * FROM users u WHERE u.email = $1`,
-          [email]
-        );
-        if (!existsUser.rows[0])
-          return h.response({ error: "User does not exists" }).code(404);
 
-        //if user exists then store the post in DB
         await pool.query(
           `INSERT INTO posts (title, description, image, about,category, user_id) VALUES ($1, $2, $3, $4, $5, $6)`,
-          [
-            title,
-            description,
-            image,
-            about,
-            category,
-            existsUser.rows[0].user_id,
-          ]
+          [title, description, image, about, category, user_id]
         );
 
         return h.response({ message: "Post created successfully" }).code(200);
+      } catch (err) {
+        console.log(err);
+        return h.response({ error: "Something went wrong" }).code(500);
+      }
+    },
+  },
+
+  //route to get all the posts of the user
+  {
+    path: "/api/alluserposts",
+    method: "GET",
+    handler: async (request: Request, h: ResponseToolkit) => {
+      try {
+        const { ID } = request.query as { ID?: number };
+        const user = request.auth.credentials;
+
+        //fetch all posts of the given user id or the logged in user
+        const { rows } = await pool.query(
+          `SELECT * FROM posts WHERE user_id = $1`,
+          [ID || user.user_id]
+        );
+
+        if (!rows[0]) return h.response({ error: "No posts found" }).code(404);
+
+        return h.response(rows).code(200);
       } catch (err) {
         console.log(err);
         return h.response({ error: "Something went wrong" }).code(500);

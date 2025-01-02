@@ -8,7 +8,9 @@ import { useRouter } from 'next/navigation';
 import { toast } from 'react-toastify';
 import axios, { AxiosResponse } from 'axios';
 import { uploadImage } from '@/lib/supabaseStorage';
+import { hapiApi } from '@/lib/client-utils';
 
+//post form type
 type postFormType = {
   title: string;
   description: string;
@@ -16,15 +18,14 @@ type postFormType = {
   category: string;
   about: string;
 };
+
+//function to send api req to create a post
 export const createPostApiReq = async (postForm: postFormType) => {
   const email = localStorage.getItem('email');
   try {
-    const res: AxiosResponse<{ message: string }> = await axios.post(
-      'http://localhost:5000/api/post',
-      {
-        postForm,
-        email,
-      }
+    const res: AxiosResponse<{ message: string }> = await hapiApi.post(
+      '/api/post',
+      { postForm }
     );
     return { message: res.data.message };
   } catch (err) {
