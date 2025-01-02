@@ -7,11 +7,16 @@ import { getCookies } from '@/lib/server-utils';
 
 export default async function NavBar() {
   const sessionValue = await getCookies();
-
-  const res = await hapiApi.get('/api/auth', {
-    headers: { cookie: `${sessionValue}` },
-  });
-  const session = res.data.user;
+  let session;
+  try {
+    const res = await hapiApi.get('/api/auth', {
+      headers: { cookie: `${sessionValue}` },
+    });
+    session = res.data.user;
+  } catch (err) {
+    console.log(err)
+    session = null;
+  }
 
   return (
     <section className="nav-bar">

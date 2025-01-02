@@ -2,7 +2,7 @@ import React, { Suspense } from 'react';
 import SearchBar from '@/components/search-bar-components/SearchBar';
 import NavBar from '@/components/NavBar';
 import PostContainer from '@/components/post-components/PostContainer';
-import { PostContainerSkeliton } from '@/components/Skelitons';
+import { PostContainerSkeliton } from '@/components/utility-components/Skelitons';
 import { JoinPostUserType } from '@/lib/types';
 import { hapiApi } from '@/lib/client-utils';
 
@@ -19,7 +19,7 @@ const Page = async ({
     const res = await hapiApi.get('/api/allposts', {
       params: { query, lastID: 0 },
     });
-    posts = res.data;
+    posts = res.data.posts;
   } catch (err) {
     console.log(err);
     return <div>Something went wrong, Please try again</div>;

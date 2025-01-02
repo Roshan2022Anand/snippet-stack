@@ -4,16 +4,25 @@ import { FaArrowRight } from 'react-icons/fa';
 import UserProfileForm from '@/components/user-profile-components/UserProfileForm';
 import { hapiApi } from '@/lib/client-utils';
 import { getCookies } from '@/lib/server-utils';
-import { UserType } from '@/lib/types';
+import { JoinPostUserType, UserType } from '@/lib/types';
 import SignOut from '@/components/user-profile-components/SignOut';
+import InfiniteScrolling from '@/components/utility-components/InfiniteScrolling';
+import PostCard from '@/components/post-components/PostCard';
 
 const Page = async () => {
   const sessionValue = await getCookies();
 
-  const res = await hapiApi.get('/api/auth', {
+  const authRes = await hapiApi.get('/api/auth', {
     headers: { cookie: `${sessionValue}` },
   });
-  const session: UserType = res.data.user;
+  const session: UserType = authRes.data.user;
+
+  const postRes = await hapiApi.get('/api/alluserposts', {
+    headers: { cookie: `${sessionValue}` },
+    params: { userID: session.user_id, lastID: 0 },
+  });
+
+  const posts: JoinPostUserType[] = postRes.data.posts;
 
   return (
     <>
@@ -29,15 +38,22 @@ const Page = async () => {
 
         <section className="mb-5 flex w-full flex-col items-center justify-center gap-2 bg-bgSecondary py-2">
           <h1>Your Profile</h1>
-          <div className='w-full flex'>
+          <div className="w-full flex">
             <UserProfileForm session={session} />
             <SignOut />
           </div>
         </section>
       </header>
       <main>
-        form action to delete the user from db and signOut
-        
+        <section className="grid grid-cols-1 lg:grid-cols-2 gap-2 px-2 w-[95vw] max-w-[1250px] mx-auto">
+          {posts.map((post, index) => (
+            <PostCard key={`initial-${index}`} post={post} />
+          ))}
+          <InfiniteScrolling
+            prevID={posts[posts.length - 1].post_id}
+            userID={session.user_id}
+          />
+        </section>
       </main>
     </>
   );

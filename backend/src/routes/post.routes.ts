@@ -43,18 +43,33 @@ const postRoute: ServerRoute[] = [
     method: "GET",
     handler: async (request: Request, h: ResponseToolkit) => {
       try {
-        const { ID } = request.query as { ID?: number };
-        const user = request.auth.credentials;
+        const { userID, lastID } = request.query as {
+          userID: number;
+          lastID: number;
+        };
 
         //fetch all posts of the given user id or the logged in user
-        const { rows } = await pool.query(
-          `SELECT * FROM posts WHERE user_id = $1`,
-          [ID || user.user_id]
-        );
 
-        if (!rows[0]) return h.response({ error: "No posts found" }).code(404);
+        let posts;
+        if (lastID > 0) {
+          const { rows } = await pool.query(
+            `SELECT * FROM posts 
+              WHERE user_id = $1 AND post_id < $2 
+              ORDER BY post_id DESC LIMIT 4`,
+            [userID, lastID]
+          );
+          posts = rows;
+        } else {
+          const { rows } = await pool.query(
+            `SELECT * FROM posts 
+              WHERE user_id = $1
+              ORDER BY post_id DESC LIMIT 4`,
+            [userID]
+          );
+          posts = rows;
+        }
 
-        return h.response(rows).code(200);
+        return h.response({ posts }).code(200);
       } catch (err) {
         console.log(err);
         return h.response({ error: "Something went wrong" }).code(500);
@@ -92,7 +107,7 @@ const postRoute: ServerRoute[] = [
             posts = rows;
           }
         }
-        return h.response(posts).code(200);
+        return h.response({ posts }).code(200);
       } catch (err) {
         console.log(err);
         return h.response({ error: "Something went wrong" }).code(500);

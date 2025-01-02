@@ -12,7 +12,7 @@ const authRoutes: ServerRoute[] = [
       if (user) {
         return h.response({ user }).code(200);
       }
-      return h.response({ user: null }).code(200);
+      return h.response({ user }).code(200);
     },
   },
 

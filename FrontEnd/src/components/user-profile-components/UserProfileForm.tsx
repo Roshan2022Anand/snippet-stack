@@ -74,7 +74,7 @@ const UserProfileForm = ({ session }: { session: UserType }) => {
             className="size-full rounded-full object-cover"
           />
         ) : (
-          <FaUser className="size-2/3" />
+          <FaUser className="size-2/3 text-accentPrimary" />
         )}
         {editState && (
           <div className="size-[30px] absolute right-0 bottom-0">

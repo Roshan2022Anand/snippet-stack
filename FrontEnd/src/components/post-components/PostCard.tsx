@@ -8,19 +8,24 @@ import {
   VoteSection,
 } from '@/components/post-components/PostCardButtons';
 import { JoinPostUserType } from '@/lib/types';
+import { FaUser } from 'react-icons/fa';
 
 const PostCard = ({ post }: { post: JoinPostUserType }) => {
   return (
     <article className="border-2 border-accentPrimary rounded-lg px-2 py-1 h-[300px] sm:h-[400px] lg:h-[400px]">
       <header className="flex gap-2 h-[15%]">
         <div className="border-4 border-accentPrimary rounded-full w-[60px]">
-          {/* <Image
-            src={`${post.pic}`}
-            alt={`${post.fname}`}
-            width={100}
-            height={100}
-            className="w-full rounded-full"
-          /> */}
+          {post.pic && post.pic !== 'null' ? (
+            <Image
+              src={`${post.pic}`}
+              alt={`${post.fname}`}
+              width={100}
+              height={100}
+              className="w-full rounded-full"
+            />
+          ) : (
+            <FaUser className="size-full p-2 text-accentPrimary" />
+          )}
         </div>
         <div>
           <h3 className="sm-bold-text">{post.fname}</h3>
@@ -39,7 +44,7 @@ const PostCard = ({ post }: { post: JoinPostUserType }) => {
             <p className="md-bold-text">{post.title}</p>
             <p className="sm-light-text">{post.description}</p>
           </section>
-          <section className="w-1/2 h-full rounded-lg overflow-hidden">
+          <section className="w-1/2 h-full rounded-lg overflow-hidden border-2 border-accentPrimary">
             <Image
               src={`${post.image}`}
               alt={post.title}

@@ -1,7 +1,7 @@
 import React from 'react';
-import { DefaultPosts } from '@/components/post-components/InfiniteScrolling';
 import PostCard from '@/components/post-components/PostCard';
-import { JoinPostUserType} from '@/lib/types';
+import { JoinPostUserType } from '@/lib/types';
+import InfiniteScrolling from '../utility-components/InfiniteScrolling';
 
 const PostContainer = async ({
   query,
@@ -25,7 +25,10 @@ const PostContainer = async ({
       {posts.map((post, index) => (
         <PostCard key={`initial-${index}`} post={post} />
       ))}
-      <DefaultPosts prevID={posts[posts.length-1].post_id} query={query}/>
+      <InfiniteScrolling
+        prevID={posts[posts.length - 1].post_id}
+        query={query}
+      />
     </section>
   );
 };
