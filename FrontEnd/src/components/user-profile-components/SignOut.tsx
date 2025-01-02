@@ -1,16 +1,18 @@
 'use client';
 import { hapiApi } from '@/lib/client-utils';
 import axios from 'axios';
-import { redirect } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import React from 'react';
 import { toast } from 'react-toastify';
 
 const SignOut = () => {
+  const router = useRouter();
+
   const handleSignOut = async () => {
     const res = await hapiApi.get('api/logout');
     if (res.data.message) {
       toast.success(res.data.message);
-      redirect('/');
+      router.push('/');
     }
   };
 
@@ -19,10 +21,10 @@ const SignOut = () => {
       const res = await hapiApi.delete('api/user');
       if (res.data.message) {
         toast.success(res.data.message);
-          redirect('/');
+        router.push('/');
       }
     } catch (err) {
-      if (axios.isAxiosError(err)) console.log(err.response?.data.error);
+      if (axios.isAxiosError(err)) toast.error(err.response?.data.error);
     }
   };
 
