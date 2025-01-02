@@ -6,9 +6,9 @@ import { z } from 'zod';
 import { PostFormValidation } from '@/lib/validations';
 import { useRouter } from 'next/navigation';
 import { toast } from 'react-toastify';
-import axios, { AxiosResponse } from 'axios';
+import { AxiosResponse } from 'axios';
 import { uploadImage } from '@/lib/supabaseStorage';
-import { hapiApi } from '@/lib/client-utils';
+import { fileToImageUrl, hapiApi } from '@/lib/client-utils';
 
 //post form type
 type postFormType = {
@@ -21,7 +21,6 @@ type postFormType = {
 
 //function to send api req to create a post
 export const createPostApiReq = async (postForm: postFormType) => {
-  const email = localStorage.getItem('email');
   try {
     const res: AxiosResponse<{ message: string }> = await hapiApi.post(
       '/api/post',
@@ -38,9 +37,7 @@ const CreatePostForm = () => {
   const router = useRouter();
 
   //All the states
-  const [userProfile, setUserProfile] = useState<string | ArrayBuffer | null>(
-    null
-  );
+  const [userProfile, setUserProfile] = useState<string | null>(null);
   const [about, setAbout] = useState('');
   const [formError, setFormError] = useState<{
     title?: string;
@@ -48,18 +45,6 @@ const CreatePostForm = () => {
     about?: string;
   }>({});
   const [isPending, setisPending] = useState<boolean>(false);
-
-  //function to convert the image to base64
-  const convertImg = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setUserProfile(reader.result);
-      };
-      reader.readAsDataURL(file);
-    }
-  };
 
   //function to submit the post
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -79,27 +64,25 @@ const CreatePostForm = () => {
       about,
     };
 
-    //validating the post object and sending the post request
     try {
+      //validating the post object
       await PostFormValidation.parseAsync(postForm);
+
+      // sending the post request
       const { message, error }: { message?: string; error?: string } =
         await createPostApiReq(postForm);
       if (message) {
         toast.success(message);
         router.push('/');
-      } else if (error) {
-        toast.error(error);
-      }
+      } else if (error) toast.error(error);
     } catch (err) {
       //handling the error by setting the form error state given by the zod error
-      if (err instanceof z.ZodError) {
-        console.log(err.errors);
+      if (err instanceof z.ZodError)
         err.errors.map((errObj) => {
           setFormError((prev) => {
             return { ...prev, [errObj.path[0]]: errObj.message };
           });
         });
-      }
     } finally {
       setisPending(false);
     }
@@ -149,7 +132,10 @@ const CreatePostForm = () => {
           className="input-field"
           type="file"
           accept="image/*"
-          onChange={convertImg}
+          onChange={(e) => {
+            const url = fileToImageUrl(e);
+            setUserProfile(url);
+          }}
           required
         />
 

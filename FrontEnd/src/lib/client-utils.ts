@@ -15,3 +15,10 @@ export const hapiApi = axios.create({
   baseURL: `${process.env.NEXT_PUBLIC_BACKEND_URI}`,
   withCredentials: true,
 });
+
+//function to convert file to image url
+export function fileToImageUrl(e: React.ChangeEvent<HTMLInputElement>) {
+  const file = e.target.files?.[0];
+  if (!file) return null;
+  return URL.createObjectURL(file);
+}

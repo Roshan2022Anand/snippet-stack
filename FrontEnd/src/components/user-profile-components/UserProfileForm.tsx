@@ -1,37 +1,48 @@
 'use client';
 import React, { useRef, useState } from 'react';
 import Image from 'next/image';
-import { FaPen } from 'react-icons/fa';
+import { FaPen, FaUser, FaPlus } from 'react-icons/fa';
 import { TiTick } from 'react-icons/ti';
 import { UserType } from '@/lib/types';
-import axios from 'axios';
 import { toast } from 'react-toastify';
+import { fileToImageUrl, hapiApi } from '@/lib/client-utils';
+import { uploadImage } from '@/lib/supabaseStorage';
+import axios from 'axios';
 
 const UserProfileForm = ({ session }: { session: UserType }) => {
   const { fname, bio, pic } = session;
+  //refs
   const nameRef = useRef<HTMLInputElement>(null);
   const bioRef = useRef<HTMLInputElement>(null);
+  const imageRef = useRef<HTMLInputElement>(null);
 
+  //states
   const [editState, setEditState] = useState<boolean>(false);
+  const [userProfile, setuserProfile] = useState<string | null>(pic);
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
+  //function to update user profile
+  const handleSubmit = async () => {
+    const pic = await uploadImage(imageRef?.current?.files?.[0] as File);
+
     const updatedUserData = {
       name: nameRef.current?.value,
       bio: bioRef.current?.value,
+      pic,
     };
 
-    const res = await axios.put('http://localhost:5000/api/user', {
-      updatedUserData,
-      userID: session.user_id,
-    });
-    if (res.data.message) toast.success(res.data.message);
-    else if (res.data.error) toast.error(res.data.error);
+    //calling API then showing the toast message
+    try {
+      const res = await hapiApi.put('/api/user', updatedUserData);
+      toast.success(res.data.message);
+      setEditState(false);
+    } catch (err) {
+      if (axios.isAxiosError(err)) toast.error(err.response?.data.error);
+    }
   };
 
   return (
     <form
-      onSubmit={handleSubmit}
+      onSubmit={(e) => e.preventDefault()}
       className="flex flex-col sm:flex-row-reverse  items-center justify-around w-2/3 relative"
     >
       <section className="absolute top-1 right-1 z-10">
@@ -39,7 +50,7 @@ const UserProfileForm = ({ session }: { session: UserType }) => {
           <button
             type="button"
             className="btn-accent-one"
-            onClick={() => setEditState(!editState)}
+            onClick={handleSubmit}
           >
             <TiTick />
           </button>
@@ -53,15 +64,31 @@ const UserProfileForm = ({ session }: { session: UserType }) => {
           </button>
         )}
       </section>
-      <section className="relative w-fit">
-        {pic && (
+      <section className="relative w-[20%] h-[85%] flex justify-center items-center border-4 border-accentPrimary rounded-full ">
+        {userProfile && userProfile !== 'null' ? (
           <Image
-            src={`${pic}`}
+            src={`${userProfile}`}
             alt={`${fname}`}
             width={200}
             height={200}
-            className="rounded-full border-4 border-accentPrimary"
+            className="size-full rounded-full object-cover"
           />
+        ) : (
+          <FaUser className="size-2/3" />
+        )}
+        {editState && (
+          <div className="size-[30px] absolute right-0 bottom-0">
+            <FaPlus className="size-full bg-accentPrimary rounded-full p-1 text-bgPrimary" />
+            <input
+              type="file"
+              className="size-full absolute top-0 left-0 opacity-0"
+              ref={imageRef}
+              onChange={(e) => {
+                const url = fileToImageUrl(e);
+                setuserProfile(url);
+              }}
+            />
+          </div>
         )}
       </section>
       <section className="flex flex-col w-2/3">
@@ -69,6 +96,8 @@ const UserProfileForm = ({ session }: { session: UserType }) => {
         <fieldset>
           <input
             type="text"
+            name="name"
+            id="name"
             ref={nameRef}
             defaultValue={fname}
             disabled={!editState}

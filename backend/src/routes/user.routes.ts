@@ -2,37 +2,47 @@ import { ServerRoute } from "@hapi/hapi";
 import pool from "../configs/dbConfig";
 import { Request, ResponseToolkit } from "@hapi/hapi";
 
+type UserPutPayload = {
+  name: string;
+  bio: string;
+  pic: string | null;
+};
+
 //Routes for all User operations
 const userRoutes: ServerRoute[] = [
   //API endpoint to update the user details
-  // {
-  //   path: "/api/user",
-  //   method: "PUT",
-  //   handler: async (request: Request, h: ResponseToolkit) => {
-  //     try {
-  //       const { updatedUserData, userID }: userPutPayload =
-  //         request.payload as userPutPayload;
-  //       const res = await pool.query(
-  //         `UPDATE users SET name = '${updatedUserData.name}', bio = '${updatedUserData.bio}' WHERE user_id = ${userID}`
-  //       );
-  //       if (res.rowCount)
-  //         return h
-  //           .response({ message: "User Data Updated Successfully" })
-  //           .code(200);
+  {
+    path: "/api/user",
+    method: "PUT",
+    handler: async (request: Request, h: ResponseToolkit) => {
+      try {
+        const user = request.auth.credentials;
+        const { name, bio, pic } = request.payload as UserPutPayload;
 
-  //       return h
-  //         .response({ message: "User Data Not Updated, Please try again" })
-  //         .code(200);
-  //     } catch (err) {
-  //       return h
-  //         .response({
-  //           error:
-  //             "Something went wrong in server, Please update after sometimes",
-  //         })
-  //         .code(500);
-  //     }
-  //   },
-  // },
+        //query to update the user details
+        const { rowCount } = await pool.query(
+          `UPDATE users SET fname = '${name}', bio = '${bio}', pic = '${pic}' WHERE user_id = ${user.user_id}`
+        );
+
+        if (rowCount)
+          return h
+            .response({ message: "User Data Updated Successfully" })
+            .code(200);
+
+        return h
+          .response({ message: "User Data Not Updated, Please try again" })
+          .code(400);
+      } catch (err) {
+        console.log(err);
+        return h
+          .response({
+            error:
+              "Something went wrong in server, Please update after sometimes",
+          })
+          .code(500);
+      }
+    },
+  },
 
   //API endpoint to delete the user
   {
@@ -41,14 +51,14 @@ const userRoutes: ServerRoute[] = [
     handler: async (request: Request, h: ResponseToolkit) => {
       try {
         const { user_id } = request.auth.credentials;
-        const res = await pool.query(
+        const { rowCount } = await pool.query(
           `DELETE FROM users WHERE user_id = ${user_id}`
         );
 
         //@ts-ignore
         request.cookieAuth.clear();
 
-        if (res.rowCount)
+        if (rowCount)
           return h
             .response({ message: "Account Deleted succesfully" })
             .code(200);
