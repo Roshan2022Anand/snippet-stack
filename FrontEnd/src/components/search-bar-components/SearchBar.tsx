@@ -6,19 +6,19 @@ import { FaSearch } from 'react-icons/fa';
 const SearchBar = async ({ query }: { query?: string }) => {
   return (
     <Form
-      action="/public"
-      className="search-form mx-auto flex w-fit items-center justify-center gap-5 rounded-lg border-2 border-accentPrimary bg-bgPrimary px-2 py-1"
+      action="/"
+      className="search-form mx-auto flex w-fit items-center justify-center rounded-lg border-2 border-accentPrimary bg-bgPrimary px-2 py-1"
     >
       <input
         type="text"
         name="query"
-        className="bg-transparent text-accentPrimary focus:outline-none"
+        className="bg-transparent text-accentPrimary focus:outline-none grow"
         placeholder="Search..."
         defaultValue={query}
       />
       {query && <ClearBtn />}`
       <button type="submit" className="btn-accent-one">
-        <FaSearch/>
+        <FaSearch />
       </button>
     </Form>
   );

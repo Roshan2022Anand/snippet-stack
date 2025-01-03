@@ -88,8 +88,25 @@ const postRoute: ServerRoute[] = [
       try {
         const { query, lastID } = request.query;
         let posts;
+        //Get posts data based on query
         if (query) {
-          //Get posts data based on query
+          if (lastID > 0) {
+            const { rows } = await pool.query(
+              `SELECT * FROM users u
+                INNER JOIN posts p ON u.user_id = p.user_id
+                WHERE (fname ILIKE $1 OR title ILIKE $1 OR description ILIKE $1 OR category ILIKE $1) AND post_id < $2`,
+              [`%${query}%`, lastID]
+            );
+            posts = rows;
+          }else {
+            const { rows } = await pool.query(
+              `SELECT * FROM users u
+                INNER JOIN posts p ON u.user_id = p.user_id
+                WHERE fname ILIKE $1 OR title ILIKE $1 OR description ILIKE $1 OR category ILIKE $1`,
+              [`%${query}%`]
+            );
+            posts = rows;
+          }
         } else {
           if (lastID > 0) {
             const { rows } = await pool.query(
@@ -102,7 +119,8 @@ const postRoute: ServerRoute[] = [
           } else {
             const { rows } = await pool.query(
               `SELECT * FROM users u
-              INNER JOIN posts p ON u.user_id = p.user_id ORDER BY post_id DESC LIMIT 4`
+              INNER JOIN posts p ON u.user_id = p.user_id 
+              ORDER BY post_id DESC LIMIT 4`
             );
             posts = rows;
           }
@@ -145,8 +163,6 @@ const postRoute: ServerRoute[] = [
       try {
         const { user_id } = request.auth.credentials;
         const { postID } = request.payload as { postID: number };
-        console.log(postID);
-        console.log(user_id);
 
         //delete the post if it's a auth user
         await pool.query(

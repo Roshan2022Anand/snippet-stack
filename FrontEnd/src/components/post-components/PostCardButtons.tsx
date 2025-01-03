@@ -49,7 +49,7 @@ export const DeletePostSection = ({ postID }: { postID: number }) => {
       toast.success(res.data.message);
     } catch (err) {
       console.log(err);
-      if (axios.isAxiosError(err)) toast.success(err.response?.data);
+      if (axios.isAxiosError(err)) toast.error(err.response?.data);
     }
   };
   return (

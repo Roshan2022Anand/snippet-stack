@@ -9,9 +9,9 @@ const ClearBtn = () => {
     if (form) form.reset();
   };
   return (
-    <button onClick={clearSearch} className="normal-btn">
-      <Link href="/public">
-        <ImCross className="rotate-45" />
+    <button onClick={clearSearch} className="btn-accent-one">
+      <Link href="/">
+        <ImCross />
       </Link>
     </button>
   );

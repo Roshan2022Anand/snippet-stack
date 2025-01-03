@@ -21,25 +21,34 @@ const PostCard = ({
   return (
     <article className="border-2 border-accentPrimary rounded-lg px-2 py-1 h-[300px] sm:h-[400px] lg:h-[400px]">
       <header className="flex gap-2 h-[15%]">
-        <div className="border-4 border-accentPrimary rounded-full w-[60px]">
-          {post.pic && post.pic !== 'null' ? (
-            <Image
-              src={`${post.pic}`}
-              alt={`${post.fname}`}
-              width={100}
-              height={100}
-              className="w-full rounded-full"
-            />
-          ) : (
-            <FaUser className="size-full p-2 text-accentPrimary" />
-          )}
-        </div>
-        <div>
-          <h3 className="sm-bold-text">{post.fname}</h3>
-          <p className="sm-light-text opacity-85">
-            {formatDate(post.created_at)}
-          </p>
-        </div>
+        <Link
+          href={
+            authUserID === post.user_id
+              ? '/profile'
+              : `/view/profile/${post.user_id}`
+          }
+          className="flex gap-2"
+        >
+          <div className="border-4 border-accentPrimary rounded-full w-[60px]">
+            {post.pic && post.pic !== 'null' ? (
+              <Image
+                src={`${post.pic}`}
+                alt={`${post.fname}`}
+                width={100}
+                height={100}
+                className="h-full object-cover object-top rounded-full"
+              />
+            ) : (
+              <FaUser className="size-full p-2 text-accentPrimary" />
+            )}
+          </div>
+          <div>
+            <h3 className="sm-bold-text">{post.fname}</h3>
+            <p className="sm-light-text opacity-85">
+              {formatDate(post.created_at)}
+            </p>
+          </div>
+        </Link>
       </header>
 
       <main className="h-[70%]">
@@ -72,7 +81,7 @@ const PostCard = ({
         </section>
         <section>
           {authUserID === post.user_id && (
-            <DeletePostSection postID={post.post_id}/>
+            <DeletePostSection postID={post.post_id} />
           )}
         </section>
       </footer>

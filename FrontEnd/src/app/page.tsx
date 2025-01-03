@@ -26,7 +26,7 @@ const Page = async ({
     return <div>Something went wrong, Please try again</div>;
   }
 
-  //fetching the session data 
+  //fetching the session data
   const sessionValue = await getCookies();
   let session;
   try {
@@ -42,9 +42,9 @@ const Page = async ({
   return (
     <>
       <header className="w-full">
-        <NavBar session={session}/>
+        <NavBar session={session} />
         <section className="mb-5 flex flex-col items-center justify-center gap-3 bg-bgSecondary py-3">
-          <h1> Brain Storm your ides here </h1>
+          <h1> Find the Programming insights here</h1>
           <SearchBar query={query} />
         </section>
       </header>
@@ -58,10 +58,16 @@ const Page = async ({
         ) : (
           <section className="grid grid-cols-1 lg:grid-cols-2 gap-2 px-2 w-[95vw] max-w-[1250px] mx-auto">
             {query && (
-              <h2 className="md-bold-text text-textPrimary">Search Results</h2>
+              <h2 className="md-bold-text text-textPrimary">
+                Search result "{query}"
+              </h2>
             )}
             {posts.map((post, index) => (
-              <PostCard key={`initial-${index}`} post={post} authUserID={session?.user_id}/>
+              <PostCard
+                key={`initial-${index}`}
+                post={post}
+                authUserID={session?.user_id}
+              />
             ))}
             <InfiniteScrolling
               prevID={posts[posts.length - 1].post_id}
