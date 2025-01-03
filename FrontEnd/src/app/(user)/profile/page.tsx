@@ -44,16 +44,27 @@ const Page = async () => {
           </div>
         </section>
       </header>
-      <main>
-        <section className="grid grid-cols-1 lg:grid-cols-2 gap-2 px-2 w-[95vw] max-w-[1250px] mx-auto">
-          {posts.map((post, index) => (
-            <PostCard key={`initial-${index}`} post={post} />
-          ))}
-          <InfiniteScrolling
-            prevID={posts[posts.length - 1].post_id}
-            userID={session.user_id}
-          />
-        </section>
+      <main className="grid grid-cols-1 lg:grid-cols-2 gap-2 px-2 w-[95vw] max-w-[1250px] mx-auto">
+        {posts.length > 0 ? (
+          <>
+            {posts.map((post, index) => (
+              <PostCard
+                key={`initial-${index}`}
+                post={post}
+                authUserID={session.user_id}
+              />
+            ))}
+            <InfiniteScrolling
+              prevID={posts[posts.length - 1].post_id}
+              userID={session.user_id}
+              authUserID={session.user_id}
+            />
+          </>
+        ) : (
+          <p className="w-screen text-center font-bold text-[2vw]">
+            no post found
+          </p>
+        )}
       </main>
     </>
   );

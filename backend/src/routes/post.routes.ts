@@ -138,7 +138,31 @@ const postRoute: ServerRoute[] = [
   },
 
   //route to delete a post
-  // { path: "/api/post/", method: "DELETE", handler: async (request, h) => {} },
+  {
+    path: "/api/post",
+    method: "DELETE",
+    handler: async (request, h) => {
+      try {
+        const { user_id } = request.auth.credentials;
+        const { postID } = request.payload as { postID: number };
+        console.log(postID);
+        console.log(user_id);
+
+        //delete the post if it's a auth user
+        await pool.query(
+          `DELETE FROM posts WHERE post_id = $1 AND user_id = $2`,
+          [postID, user_id]
+        );
+
+        return h.response({ message: "Post deleted successfully" }).code(200);
+      } catch (err) {
+        console.log(err);
+        return h
+          .response({ error: "Something went wrong, Please try again later" })
+          .code(500);
+      }
+    },
+  },
 ];
 
 export default postRoute;

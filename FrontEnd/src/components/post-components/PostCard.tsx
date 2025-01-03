@@ -4,13 +4,20 @@ import Image from 'next/image';
 import { formatDate } from '@/lib/client-utils';
 import {
   CommentSection,
+  DeletePostSection,
   ViewsSection,
   VoteSection,
 } from '@/components/post-components/PostCardButtons';
 import { JoinPostUserType } from '@/lib/types';
 import { FaUser } from 'react-icons/fa';
 
-const PostCard = ({ post }: { post: JoinPostUserType }) => {
+const PostCard = ({
+  post,
+  authUserID,
+}: {
+  post: JoinPostUserType;
+  authUserID?: number;
+}) => {
   return (
     <article className="border-2 border-accentPrimary rounded-lg px-2 py-1 h-[300px] sm:h-[400px] lg:h-[400px]">
       <header className="flex gap-2 h-[15%]">
@@ -57,10 +64,17 @@ const PostCard = ({ post }: { post: JoinPostUserType }) => {
         </Link>
       </main>
 
-      <footer className="h-[15%] flex gap-3 w-1/2 md:w-2/3">
-        <VoteSection />
-        <CommentSection />
-        <ViewsSection />
+      <footer className="h-[15%] flex justify-between">
+        <section className="flex gap-3 w-1/2 md:w-2/3 h-full">
+          <VoteSection />
+          <CommentSection />
+          <ViewsSection />
+        </section>
+        <section>
+          {authUserID === post.user_id && (
+            <DeletePostSection postID={post.post_id}/>
+          )}
+        </section>
       </footer>
     </article>
   );

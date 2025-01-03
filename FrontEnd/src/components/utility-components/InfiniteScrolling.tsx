@@ -9,10 +9,12 @@ const InfiniteScrolling = ({
   prevID,
   query,
   userID,
+  authUserID,
 }: {
   prevID: number;
   query?: string;
   userID?: number;
+  authUserID?: number;
 }) => {
   const { ref, inView } = useInView();
   const [lastID, setLastID] = useState<number>(prevID);
@@ -54,12 +56,12 @@ const InfiniteScrolling = ({
     if (inView) {
       showMorePosts();
     }
-  }, [inView, lastID, query]);
+  }, [inView, lastID, query, userID]);
 
   return (
     <>
       {allPosts.map((post, index) => (
-        <PostCard key={index} post={post} />
+        <PostCard key={index} post={post} authUserID={authUserID} />
       ))}
       <div ref={ref} className="h-10 w-screen text-center">
         {loading ? (

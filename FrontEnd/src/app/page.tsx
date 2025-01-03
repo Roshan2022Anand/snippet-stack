@@ -1,10 +1,11 @@
-import React, { Suspense } from 'react';
+import React from 'react';
 import SearchBar from '@/components/search-bar-components/SearchBar';
 import NavBar from '@/components/NavBar';
-import PostContainer from '@/components/post-components/PostContainer';
-import { PostContainerSkeliton } from '@/components/utility-components/Skelitons';
 import { JoinPostUserType } from '@/lib/types';
 import { hapiApi } from '@/lib/client-utils';
+import PostCard from '@/components/post-components/PostCard';
+import InfiniteScrolling from '@/components/utility-components/InfiniteScrolling';
+import { getCookies } from '@/lib/server-utils';
 
 const Page = async ({
   searchParams,
@@ -14,7 +15,7 @@ const Page = async ({
   const query = (await searchParams).query;
 
   //fetching all the posts
-  let posts: JoinPostUserType[] | undefined;
+  let posts: JoinPostUserType[];
   try {
     const res = await hapiApi.get('/api/allposts', {
       params: { query, lastID: 0 },
@@ -25,22 +26,49 @@ const Page = async ({
     return <div>Something went wrong, Please try again</div>;
   }
 
+  //fetching the session data 
+  const sessionValue = await getCookies();
+  let session;
+  try {
+    const res = await hapiApi.get('/api/auth', {
+      headers: { cookie: `${sessionValue}` },
+    });
+    session = res.data.user;
+  } catch (err) {
+    console.log(err);
+    session = null;
+  }
+
   return (
     <>
       <header className="w-full">
-        <NavBar />
+        <NavBar session={session}/>
         <section className="mb-5 flex flex-col items-center justify-center gap-3 bg-bgSecondary py-3">
           <h1> Brain Storm your ides here </h1>
           <SearchBar query={query} />
         </section>
       </header>
+
+      {/* showing all teh posts */}
       <main>
-        {posts ? (
-          <Suspense fallback={<div>Loading...</div>}>
-            <PostContainer query={query} posts={posts} />
-          </Suspense>
+        {posts.length === 0 ? (
+          <div className="md-bold-text w-full text-center text-textPrimary">
+            No Posts Found
+          </div>
         ) : (
-          <PostContainerSkeliton />
+          <section className="grid grid-cols-1 lg:grid-cols-2 gap-2 px-2 w-[95vw] max-w-[1250px] mx-auto">
+            {query && (
+              <h2 className="md-bold-text text-textPrimary">Search Results</h2>
+            )}
+            {posts.map((post, index) => (
+              <PostCard key={`initial-${index}`} post={post} authUserID={session?.user_id}/>
+            ))}
+            <InfiniteScrolling
+              prevID={posts[posts.length - 1].post_id}
+              query={query}
+              authUserID={session?.user_id}
+            />
+          </section>
         )}
       </main>
     </>

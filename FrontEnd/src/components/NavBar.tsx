@@ -2,22 +2,9 @@ import React from 'react';
 import Link from 'next/link';
 import { IoMdAdd } from 'react-icons/io';
 import { FaUserAlt } from 'react-icons/fa';
-import { hapiApi } from '@/lib/client-utils';
-import { getCookies } from '@/lib/server-utils';
+import { UserType } from '@/lib/types';
 
-export default async function NavBar() {
-  const sessionValue = await getCookies();
-  let session;
-  try {
-    const res = await hapiApi.get('/api/auth', {
-      headers: { cookie: `${sessionValue}` },
-    });
-    session = res.data.user;
-  } catch (err) {
-    console.log(err)
-    session = null;
-  }
-
+export default async function NavBar({session}: {session: UserType}) {
   return (
     <section className="nav-bar">
       <div className="font-bold text-accentPrimary">Logo</div>
