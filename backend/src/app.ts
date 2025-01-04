@@ -1,9 +1,10 @@
 import { Request, ResponseToolkit } from "@hapi/hapi";
 import testDbConnection from "./tests/connectDbTest";
-import userRoutes from "./routes/user.routes";
-import authRoutes from "./routes/auth.routes";
-import postRoute from "./routes/post.routes";
-import pool from "./configs/dbConfig";
+import pool from "./db/dbConfig";
+import PostUtilsRoutes from "./routes/postUtils.routes";
+import UserRoutes from "./routes/user.routes";
+import AuthRoutes from "./routes/auth.routes";
+import PostRoute from "./routes/post.routes";
 
 const Cookie = require("@hapi/cookie");
 const Hapi = require("@hapi/hapi");
@@ -65,9 +66,10 @@ const init = async () => {
   });
 
   // Register the routes
-  server.route(userRoutes);
-  server.route(authRoutes);
-  server.route(postRoute);
+  server.route(UserRoutes);
+  server.route(AuthRoutes);
+  server.route(PostRoute);
+  server.route(PostUtilsRoutes);
 
   await server.start();
 };

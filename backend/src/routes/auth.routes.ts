@@ -1,8 +1,8 @@
 import { Request, ResponseToolkit, ServerRoute } from "@hapi/hapi";
 import Bcrypt from "bcryptjs";
-import pool from "../configs/dbConfig";
+import pool from "../db/dbConfig";
 
-const authRoutes: ServerRoute[] = [
+const AuthRoutes: ServerRoute[] = [
   // route to get authenticated user details
   {
     path: "/api/auth",
@@ -115,4 +115,4 @@ const authRoutes: ServerRoute[] = [
   },
 ];
 
-export default authRoutes;
+export default AuthRoutes;

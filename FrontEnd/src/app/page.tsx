@@ -13,21 +13,9 @@ const Page = async ({
   searchParams: Promise<{ query?: string }>;
 }) => {
   const query = (await searchParams).query;
-
-  //fetching all the posts
-  let posts: JoinPostUserType[];
-  try {
-    const res = await hapiApi.get('/api/allposts', {
-      params: { query, lastID: 0 },
-    });
-    posts = res.data.posts;
-  } catch (err) {
-    console.log(err);
-    return <div>Something went wrong, Please try again</div>;
-  }
+  const sessionValue = await getCookies();
 
   //fetching the session data
-  const sessionValue = await getCookies();
   let session;
   try {
     const res = await hapiApi.get('/api/auth', {
@@ -35,8 +23,19 @@ const Page = async ({
     });
     session = res.data.user;
   } catch (err) {
-    console.log(err);
     session = null;
+  }
+
+  //fetching all the posts
+  let posts: JoinPostUserType[] | null;
+  try {
+    const res = await hapiApi.get('/api/allposts', {
+      headers: { cookie: `${sessionValue}` },
+      params: { query, lastID: 0 },
+    });
+    posts = res.data.posts;
+  } catch (err) {
+    posts = null;
   }
 
   return (
@@ -48,35 +47,37 @@ const Page = async ({
           <SearchBar query={query} />
         </section>
       </header>
-
-      {/* showing all teh posts */}
-      <main>
-        {posts.length === 0 ? (
-          <div className="md-bold-text w-full text-center text-textPrimary">
-            No Posts Found
-          </div>
-        ) : (
-          <section className="grid grid-cols-1 lg:grid-cols-2 gap-2 px-2 w-[95vw] max-w-[1250px] mx-auto">
-            {query && (
-              <h2 className="md-bold-text text-textPrimary">
-                Search result "{query}"
-              </h2>
-            )}
-            {posts.map((post, index) => (
-              <PostCard
-                key={`initial-${index}`}
-                post={post}
+      {posts ? (
+        <main>
+          {posts.length === 0 ? (
+            <div className="md-bold-text w-full text-center text-textPrimary">
+              No Posts Found
+            </div>
+          ) : (
+            <section className="grid grid-cols-1 lg:grid-cols-2 gap-2 px-2 w-[95vw] max-w-[1250px] mx-auto">
+              {query && (
+                <h2 className="md-bold-text text-textPrimary">
+                  Search result "{query}"
+                </h2>
+              )}
+              {posts.map((post, index) => (
+                <PostCard
+                  key={`initial-${index}`}
+                  post={post}
+                  authUserID={session?.user_id}
+                />
+              ))}
+              <InfiniteScrolling
+                prevID={posts[posts.length - 1].post_id}
+                query={query}
                 authUserID={session?.user_id}
               />
-            ))}
-            <InfiniteScrolling
-              prevID={posts[posts.length - 1].post_id}
-              query={query}
-              authUserID={session?.user_id}
-            />
-          </section>
-        )}
-      </main>
+            </section>
+          )}
+        </main>
+      ) : (
+        <h3>Please Login To see the posts</h3>
+      )}
     </>
   );
 };

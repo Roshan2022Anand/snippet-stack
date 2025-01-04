@@ -1,6 +1,6 @@
 'use client';
 import Link from 'next/link';
-import React from 'react';
+import React, { useState } from 'react';
 import { toast } from 'react-toastify';
 import { useRouter } from 'next/navigation';
 import { hapiApi } from '@/lib/client-utils';
@@ -8,6 +8,8 @@ import axios from 'axios';
 
 const Page = () => {
   const router = useRouter();
+
+  const [isLoading, setisLoading] = useState<boolean>(false);
 
   //function to handle the form submission
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -28,6 +30,7 @@ const Page = () => {
     } catch (err) {
       if (axios.isAxiosError(err)) toast.error(err.response?.data.error);
     }
+    setisLoading(false);
   };
 
   return (
@@ -57,8 +60,9 @@ const Page = () => {
         <button
           type="submit"
           className="btn-accent-one mt-2 border-2 border-textPrimary"
+          onClick={() => setisLoading(true)}
         >
-          Login
+          {isLoading ? 'Loading...' : 'Login'}
         </button>
         <p>
           New to snippet stack ?

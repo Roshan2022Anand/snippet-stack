@@ -1,5 +1,5 @@
 import { ServerRoute } from "@hapi/hapi";
-import pool from "../configs/dbConfig";
+import pool from "../db/dbConfig";
 import { Request, ResponseToolkit } from "@hapi/hapi";
 
 type UserPutPayload = {
@@ -9,7 +9,7 @@ type UserPutPayload = {
 };
 
 //Routes for all User operations
-const userRoutes: ServerRoute[] = [
+const UserRoutes: ServerRoute[] = [
   //API endpoint to update the user details
   {
     path: "/api/user",
@@ -71,4 +71,4 @@ const userRoutes: ServerRoute[] = [
   },
 ];
 
-export default userRoutes;
+export default UserRoutes;

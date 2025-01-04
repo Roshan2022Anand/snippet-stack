@@ -12,6 +12,7 @@ const Page = () => {
     isErr: false,
     msg: '',
   });
+  const [isLoading, setisLoading] = useState<boolean>(false);
 
   //function to handle the form submission
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -38,6 +39,7 @@ const Page = () => {
     } catch (err) {
       if (axios.isAxiosError(err)) toast.error(err.response?.data.error);
     }
+    setisLoading(false);
   };
 
   return (
@@ -88,8 +90,9 @@ const Page = () => {
         <button
           type="submit"
           className="btn-accent-one mt-2 border-2 border-textPrimary"
+          onClick={() => setisLoading(true)}
         >
-          Sign Up
+          {isLoading ? 'Loading...' : 'Sign Up'}
         </button>
         <p>
           Already have an account ?

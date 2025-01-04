@@ -1,5 +1,6 @@
 import { Request, ResponseToolkit, ServerRoute } from "@hapi/hapi";
-import pool from "../configs/dbConfig";
+import pool from "../db/dbConfig";
+import { BasicPostQuery } from "../db/queries";
 
 type postData = {
   postForm: {
@@ -11,7 +12,7 @@ type postData = {
   };
 };
 
-const postRoute: ServerRoute[] = [
+const PostRoute: ServerRoute[] = [
   //route to create a post
   {
     path: "/api/post",
@@ -81,49 +82,50 @@ const postRoute: ServerRoute[] = [
   {
     path: "/api/allposts",
     method: "GET",
-    options: {
-      auth: false,
-    },
     handler: async (request: Request, h: ResponseToolkit) => {
       try {
+        const { user_id } = request.auth.credentials;
         const { query, lastID } = request.query;
         let posts;
-        //Get posts data based on query
-        if (query) {
-          if (lastID > 0) {
-            const { rows } = await pool.query(
-              `SELECT * FROM users u
-                INNER JOIN posts p ON u.user_id = p.user_id
-                WHERE (fname ILIKE $1 OR title ILIKE $1 OR description ILIKE $1 OR category ILIKE $1) AND post_id < $2`,
-              [`%${query}%`, lastID]
-            );
-            posts = rows;
-          }else {
-            const { rows } = await pool.query(
-              `SELECT * FROM users u
-                INNER JOIN posts p ON u.user_id = p.user_id
-                WHERE fname ILIKE $1 OR title ILIKE $1 OR description ILIKE $1 OR category ILIKE $1`,
-              [`%${query}%`]
-            );
-            posts = rows;
-          }
+
+        if (query && lastID > 0) {
+          //query to search posts based on query and lastID
+          const { rows } = await pool.query(
+            `${BasicPostQuery}
+          WHERE (fname ILIKE $2 OR title ILIKE $2 OR description ILIKE $2 OR category ILIKE $2) AND p.post_id < $3
+          GROUP BY u.user_id,p.post_id;`,
+            [user_id,`%${query}%`, lastID]
+          );
+          posts = rows;
+        } else if (query) {
+          //query to search posts based on query
+          const { rows } = await pool.query(
+            `${BasicPostQuery}
+                WHERE fname ILIKE $2 OR title ILIKE $2 OR description ILIKE $2 OR category ILIKE $2
+                 GROUP BY u.user_id,p.post_id
+                 ORDER BY post_id DESC LIMIT 4`,
+            [user_id, `%${query}%`]
+          );
+          posts = rows;
+        } else if (lastID > 0) {
+          //query to fetch more posts based on lastID
+          const { rows } = await pool.query(
+            `${BasicPostQuery}
+                WHERE p.post_id < $2 
+                GROUP BY u.user_id,p.post_id
+                ORDER BY post_id DESC LIMIT 4`,
+            [user_id, lastID]
+          );
+          posts = rows;
         } else {
-          if (lastID > 0) {
-            const { rows } = await pool.query(
-              `SELECT * FROM users u
-              INNER JOIN posts p ON u.user_id = p.user_id
-              WHERE post_id < ${lastID} 
-              ORDER BY post_id DESC LIMIT 4`
-            );
-            posts = rows;
-          } else {
-            const { rows } = await pool.query(
-              `SELECT * FROM users u
-              INNER JOIN posts p ON u.user_id = p.user_id 
-              ORDER BY post_id DESC LIMIT 4`
-            );
-            posts = rows;
-          }
+          //query to fetch new posts
+          const { rows } = await pool.query(
+            `${BasicPostQuery}
+            GROUP BY u.user_id, p.post_id
+            ORDER BY post_id DESC LIMIT 4`,
+            [user_id]
+          );
+          posts = rows;
         }
         return h.response({ posts }).code(200);
       } catch (err) {
@@ -181,4 +183,4 @@ const postRoute: ServerRoute[] = [
   },
 ];
 
-export default postRoute;
+export default PostRoute;

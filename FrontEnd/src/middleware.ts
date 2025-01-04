@@ -6,7 +6,7 @@ import { toast } from 'react-toastify';
 // Middleware function
 export async function middleware(request: NextRequest) {
   const sessionValue = await getCookies();
-  const publicPages = ['/', '/signup', '/login'];
+  const publicPages = ['/signup', '/login'];
 
   if (!sessionValue && !publicPages.includes(request.nextUrl.pathname))
     return NextResponse.redirect(new URL('/login', request.url));
