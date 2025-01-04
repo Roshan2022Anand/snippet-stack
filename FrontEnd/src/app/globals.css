@@ -78,3 +78,8 @@ fieldset {
         border: 2px solid var(--accent-primary);
     }
 }
+
+.text-outline{
+    font-weight: 500;
+    -webkit-text-stroke: 1px var(--bg-primary);
+}

@@ -1,6 +1,5 @@
 'use client';
-import React from 'react';
-import { TiArrowDownOutline, TiArrowUpOutline } from 'react-icons/ti';
+import React, { useState } from 'react';
 import { BiCommentDetail } from 'react-icons/bi';
 import { FaEye } from 'react-icons/fa';
 import { MdDeleteForever } from 'react-icons/md';
@@ -8,21 +7,60 @@ import axios from 'axios';
 import { toast } from 'react-toastify';
 import { hapiApi } from '@/lib/client-utils';
 import { PostInfoType } from '@/lib/types';
+import { FaDownLong, FaUpLong } from 'react-icons/fa6';
+import { TbArrowBigDown, TbArrowBigUp } from 'react-icons/tb';
 
 //component for voting the posts
 export const VoteSection = ({ post }: { post: PostInfoType }) => {
-  const { up_votes, down_votes, voted } = post;
+  const { up_votes, down_votes, voted, post_id } = post;
+
+  const [up, setup] = useState<number>(up_votes);
+  const [down, setdown] = useState<number>(down_votes);
+  const [isVoted, setisVoted] = useState(voted);
+
+  const sendVoteResult = async (vote: any) => {
+    const voteType: boolean = Boolean(vote);
+    setisVoted(vote);
+    try {
+      const res = await hapiApi.put('/api/vote', { voteType, post_id });
+      setup(res.data.up_votes);
+      setdown(res.data.down_votes);
+      toast.success(res.data.message);
+    } catch (err) {
+      console.log(err);
+      if (axios.isAxiosError(err)) toast.error(err.response?.data.error);
+      setisVoted(Number(!vote));
+    }
+  };
 
   return (
-    <div className="h-full btn-accent-one flex items-center grow-[2] justify-evenly">
-      <button className="h-fit w-[45%] flex items-end">
-        <TiArrowUpOutline className="size-2/3 " />
-        <p>{up_votes}</p>
+    <div className="h-full bg-accentPrimary flex items-center grow-[2] justify-evenly">
+      <button className="h-fit w-[45%] flex items-end text-white">
+        {isVoted == 1 ? (
+          <FaUpLong className="size-2/3" />
+        ) : (
+          <TbArrowBigUp
+            className="size-2/3"
+            onClick={() => {
+              sendVoteResult(1);
+            }}
+          />
+        )}
+        <p>{up}</p>
       </button>
       <div className="w-[2px] h-2/3 bg-bgPrimary"></div>
-      <button className="h-fit w-[45%] flex items-end">
-        <TiArrowDownOutline className="size-2/3" />
-        <p>{down_votes}</p>
+      <button className="h-fit w-[45%] flex items-end text-white">
+        {isVoted == 0 ? (
+          <FaDownLong className="size-2/3" />
+        ) : (
+          <TbArrowBigDown
+            className="size-2/3"
+            onClick={() => {
+              sendVoteResult(0);
+            }}
+          />
+        )}
+        <p>{down}</p>
       </button>
     </div>
   );
@@ -42,8 +80,8 @@ export const CommentSection = ({ comments }: { comments: number }) => {
 export const ViewsSection = ({ views }: { views: number }) => {
   return (
     <button className="text-accentPrimary grow flex items-center">
-      <FaEye className='size-1/2'/>
-      <p className='text-[15px]'>{views}</p>
+      <FaEye className="size-1/2" />
+      <p className="text-[15px]">{views}</p>
     </button>
   );
 };
