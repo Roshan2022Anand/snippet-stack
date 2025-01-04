@@ -94,7 +94,7 @@ const PostRoute: ServerRoute[] = [
             `${BasicPostQuery}
           WHERE (fname ILIKE $2 OR title ILIKE $2 OR description ILIKE $2 OR category ILIKE $2) AND p.post_id < $3
           GROUP BY u.user_id,p.post_id;`,
-            [user_id,`%${query}%`, lastID]
+            [user_id, `%${query}%`, lastID]
           );
           posts = rows;
         } else if (query) {
@@ -143,9 +143,9 @@ const PostRoute: ServerRoute[] = [
       try {
         const { postId } = request.query as { postId: string };
         const { rows } = await pool.query(
-          `SELECT * FROM users u
-           INNER JOIN posts p ON u.user_id = p.user_id
-           WHERE post_id = $1`,
+          `${BasicPostQuery}
+            WHERE p.post_id = $1
+            GROUP BY u.user_id, p.post_id`,
           [postId]
         );
         if (!rows[0]) return h.response({ error: "Post not found" }).code(404);

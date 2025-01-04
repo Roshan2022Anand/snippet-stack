@@ -1,7 +1,6 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 import { getCookies } from './lib/server-utils';
-import { toast } from 'react-toastify';
 
 // Middleware function
 export async function middleware(request: NextRequest) {

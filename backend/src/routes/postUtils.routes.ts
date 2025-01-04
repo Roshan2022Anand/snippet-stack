@@ -41,7 +41,6 @@ const PostUtilsRoutes: ServerRoute[] = [
           [post_id]
         );
         const { up_votes, down_votes } = res.rows[0];
-
         return h
           .response({ message: "voted successfully", up_votes, down_votes })
           .code(200);
@@ -53,6 +52,8 @@ const PostUtilsRoutes: ServerRoute[] = [
       }
     },
   },
+
+  //route to add a comment
 ];
 
 export default PostUtilsRoutes;

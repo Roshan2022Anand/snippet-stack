@@ -1,21 +1,23 @@
 "use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
+const connectDbTest_1 = __importDefault(require("./tests/connectDbTest"));
+const dbConfig_1 = __importDefault(require("./db/dbConfig"));
+const postUtils_routes_1 = __importDefault(require("./routes/postUtils.routes"));
+const user_routes_1 = __importDefault(require("./routes/user.routes"));
+const auth_routes_1 = __importDefault(require("./routes/auth.routes"));
+const post_routes_1 = __importDefault(require("./routes/post.routes"));
 const Cookie = require("@hapi/cookie");
 const Hapi = require("@hapi/hapi");
-const testDbConnection = require("./tests/connectDbTest");
-const userRoutes = require("./routes/user.routes");
-const authRoutes = require("./routes/auth.routes");
-const postRoute = require("./routes/post.routes");
-const pool = require("./configs/dbConfig");
-const dotenv = require("dotenv");
-// Create a new server instance
 const init = async () => {
+    // Defining the server configuration with CORS
     const server = Hapi.server({
         port: 5000,
         host: "localhost",
         routes: {
             cors: {
-                //origin from env file FRONTEND_URL
                 origin: [process.env.FRONTEND_URL],
                 credentials: true,
             },
@@ -37,7 +39,7 @@ const init = async () => {
         // @ts-ignore
         validate: async (request, session) => {
             const email = session.email;
-            const { rows } = await pool.query(`SELECT * FROM users u WHERE u.email = $1`, [email]);
+            const { rows } = await dbConfig_1.default.query(`SELECT * FROM users u WHERE u.email = $1`, [email]);
             if (rows[0]) {
                 return { isValid: true, credentials: rows[0] };
             }
@@ -45,7 +47,8 @@ const init = async () => {
         },
     });
     server.auth.default("session");
-    await testDbConnection();
+    await (0, connectDbTest_1.default)();
+    //entry point to check if server is running
     server.route({
         path: "/",
         method: "GET",
@@ -57,9 +60,10 @@ const init = async () => {
         },
     });
     // Register the routes
-    server.route(userRoutes);
-    server.route(authRoutes);
-    server.route(postRoute);
+    server.route(user_routes_1.default);
+    server.route(auth_routes_1.default);
+    server.route(post_routes_1.default);
+    server.route(postUtils_routes_1.default);
     await server.start();
 };
 // Handle unhandled promise rejections

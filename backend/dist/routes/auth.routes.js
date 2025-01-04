@@ -4,8 +4,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const bcryptjs_1 = __importDefault(require("bcryptjs"));
-const dbConfig_1 = __importDefault(require("../configs/dbConfig"));
-const authRoutes = [
+const dbConfig_1 = __importDefault(require("../db/dbConfig"));
+const AuthRoutes = [
     // route to get authenticated user details
     {
         path: "/api/auth",
@@ -15,7 +15,7 @@ const authRoutes = [
             if (user) {
                 return h.response({ user }).code(200);
             }
-            return h.response({ user: null }).code(200);
+            return h.response({ user }).code(200);
         },
     },
     // route for signing up
@@ -90,4 +90,4 @@ const authRoutes = [
         },
     },
 ];
-exports.default = authRoutes;
+exports.default = AuthRoutes;

@@ -8,7 +8,7 @@ import {
   ViewsSection,
   VoteSection,
 } from '@/components/post-components/PostCardButtons';
-import { JoinPostUserType, PostInfoType } from '@/lib/types';
+import { PostInfoType } from '@/lib/types';
 import { FaUser } from 'react-icons/fa';
 
 const PostCard = ({
@@ -75,9 +75,9 @@ const PostCard = ({
 
       <footer className="h-[15%] flex justify-between">
         <section className="flex gap-3 w-1/2 md:w-2/3 h-full">
-          <VoteSection post={post}/>
-          <CommentSection comments={post.comments}/>
-          <ViewsSection views={post.views}/>
+          <VoteSection post={post} />
+          <CommentSection comments={post.comments} />
+          <ViewsSection views={post.views} />
         </section>
         <section>
           {authUserID === post.user_id && (

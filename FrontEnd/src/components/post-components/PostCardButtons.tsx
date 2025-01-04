@@ -18,7 +18,7 @@ export const VoteSection = ({ post }: { post: PostInfoType }) => {
   const [down, setdown] = useState<number>(down_votes);
   const [isVoted, setisVoted] = useState(voted);
 
-  const sendVoteResult = async (vote: any) => {
+  const sendVoteResult = async (vote: number) => {
     const voteType: boolean = Boolean(vote);
     setisVoted(vote);
     try {
@@ -34,7 +34,7 @@ export const VoteSection = ({ post }: { post: PostInfoType }) => {
   };
 
   return (
-    <div className="h-full bg-accentPrimary flex items-center grow-[2] justify-evenly">
+    <div className="bg-accentPrimary flex items-center grow-[2] justify-evenly rounded-md">
       <button className="h-fit w-[45%] flex items-end text-white">
         {isVoted == 1 ? (
           <FaUpLong className="size-2/3" />

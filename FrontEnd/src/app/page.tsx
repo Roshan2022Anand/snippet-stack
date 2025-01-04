@@ -1,7 +1,7 @@
 import React from 'react';
 import SearchBar from '@/components/search-bar-components/SearchBar';
 import NavBar from '@/components/NavBar';
-import { JoinPostUserType } from '@/lib/types';
+import { PostInfoType } from '@/lib/types';
 import { hapiApi } from '@/lib/client-utils';
 import PostCard from '@/components/post-components/PostCard';
 import InfiniteScrolling from '@/components/utility-components/InfiniteScrolling';
@@ -23,11 +23,12 @@ const Page = async ({
     });
     session = res.data.user;
   } catch (err) {
+    console.log(err);
     session = null;
   }
 
   //fetching all the posts
-  let posts: JoinPostUserType[] | null;
+  let posts: PostInfoType[] | null;
   try {
     const res = await hapiApi.get('/api/allposts', {
       headers: { cookie: `${sessionValue}` },
@@ -35,6 +36,7 @@ const Page = async ({
     });
     posts = res.data.posts;
   } catch (err) {
+    console.log(err);
     posts = null;
   }
 
