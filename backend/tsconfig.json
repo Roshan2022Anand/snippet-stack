@@ -10,6 +10,6 @@
     "rootDir": "./src",
     "types": ["@hapi/hapi", "node"],
   },
-  "include": ["src", "types", "node_modules/@types", "hapi-auth.d.ts", "src/tests/app.ts"],
+  "include": ["src", "types", "node_modules/@types", "hapi-auth.d.ts"],
   "exclude": ["node_modules", "dist"]
 }

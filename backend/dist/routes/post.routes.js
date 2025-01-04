@@ -106,9 +106,9 @@ const PostRoute = [
         handler: async (request, h) => {
             try {
                 const { postId } = request.query;
-                const { rows } = await dbConfig_1.default.query(`SELECT * FROM users u
-           INNER JOIN posts p ON u.user_id = p.user_id
-           WHERE post_id = $1`, [postId]);
+                const { rows } = await dbConfig_1.default.query(`${queries_1.BasicPostQuery}
+            WHERE p.post_id = $1
+            GROUP BY u.user_id, p.post_id`, [postId]);
                 if (!rows[0])
                     return h.response({ error: "Post not found" }).code(404);
                 return h.response({ postData: rows[0] }).code(200);

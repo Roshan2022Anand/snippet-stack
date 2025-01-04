@@ -16,7 +16,7 @@
     "@hapi/hapi": "^21.3.12",
     "@types/bcryptjs": "^2.4.6",
     "@types/hapi__hapi": "^21.0.0",
-    "@types/node": "^22.10.3",
+    "@types/node": "^22.10.5",
     "@types/pg": "^8.11.10",
     "dotenv": "^16.4.7",
     "globals": "^15.14.0",
