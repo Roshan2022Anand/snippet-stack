@@ -49,7 +49,7 @@ const Page = async () => {
           <>
             {posts.map((post, index) => (
               <PostCard
-                key={`initial-${index}`}
+                key={`post-${index}`}
                 post={post}
                 authUserID={session.user_id}
               />

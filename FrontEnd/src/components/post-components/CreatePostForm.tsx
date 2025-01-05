@@ -1,5 +1,5 @@
 'use client';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Image from 'next/image';
 import MDEditor from '@uiw/react-md-editor';
 import { z } from 'zod';
@@ -9,6 +9,7 @@ import { toast } from 'react-toastify';
 import { AxiosResponse } from 'axios';
 import { uploadImage } from '@/lib/supabaseStorage';
 import { fileToImageUrl, hapiApi } from '@/lib/client-utils';
+import { PostInfoType } from '@/lib/types';
 
 //post form type
 type postFormType = {
@@ -20,7 +21,7 @@ type postFormType = {
 };
 
 //function to send api req to create a post
-export const createPostApiReq = async (postForm: postFormType) => {
+const createPostApiReq = async (postForm: postFormType) => {
   try {
     const res: AxiosResponse<{ message: string }> = await hapiApi.post(
       '/api/post',
@@ -33,7 +34,20 @@ export const createPostApiReq = async (postForm: postFormType) => {
   }
 };
 
-const CreatePostForm = () => {
+const updatePostApiReq = async (postForm: postFormType) => {
+  try {
+    const res: AxiosResponse<{ message: string }> = await hapiApi.put(
+      '/api/post',
+      { postForm }
+    );
+    return { message: res.data.message };
+  } catch (err) {
+    console.log(err);
+    return { error: 'Something went wrong, Please try again later' };
+  }
+};
+
+const CreatePostForm = ({ id }: { id?: number }) => {
   const router = useRouter();
 
   //All the states
@@ -45,6 +59,20 @@ const CreatePostForm = () => {
     about?: string;
   }>({});
   const [isPending, setisPending] = useState<boolean>(false);
+  const [postData, setpostData] = useState<PostInfoType>();
+
+  useEffect(() => {
+    //if id is present then get the post data to update
+    const getPostData = async () => {
+      const res = await hapiApi.get('/api/post', {
+        params: { postId: id },
+      });
+      setpostData(res.data.postData);
+      setUserProfile(res.data.postData.image);
+      setAbout(res.data.postData.about);
+    };
+    if (id) getPostData();
+  }, []);
 
   //function to submit the post
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -69,8 +97,10 @@ const CreatePostForm = () => {
       await PostFormValidation.parseAsync(postForm);
 
       // sending the post request
-      const { message, error }: { message?: string; error?: string } =
-        await createPostApiReq(postForm);
+      const { message, error }: { message?: string; error?: string } = id
+        ? await updatePostApiReq(postForm)
+        : await createPostApiReq(postForm);
+
       if (message) {
         toast.success(message);
         router.push('/');
@@ -96,6 +126,7 @@ const CreatePostForm = () => {
       >
         <label htmlFor="title">Title:</label>
         <input
+          defaultValue={id ? postData?.title : ''}
           name="title"
           className="input-field"
           type="text"
@@ -107,6 +138,7 @@ const CreatePostForm = () => {
 
         <label htmlFor="desc">Description:</label>
         <textarea
+          defaultValue={id ? postData?.description : ''}
           name="desc"
           className="input-field"
           placeholder="eg:This is a tutorial on how to use for loop in JavaScript"
@@ -120,7 +152,7 @@ const CreatePostForm = () => {
         {userProfile && (
           <Image
             src={`${userProfile}`}
-            alt={`${userProfile}`}
+            alt="image"
             width={100}
             height={100}
             className="size-[10vw] object-cover"
@@ -141,6 +173,7 @@ const CreatePostForm = () => {
 
         <label htmlFor="category">Choose The Tech:</label>
         <input
+          defaultValue={id ? postData?.category : ''}
           name="category"
           className="input-field"
           type="text"
@@ -169,7 +202,13 @@ const CreatePostForm = () => {
           type="submit"
           className="w-full my-5 rounded-lg bg-accentPrimary p-1 px-5 border-2 border-textPrimary text-bgPrimary font-bold"
         >
-          {isPending ? 'Submiting the Post ....' : 'Create'}
+          {isPending
+            ? id
+              ? 'Updating the Post'
+              : 'Submiting the Post ....'
+            : id
+              ? 'Update'
+              : 'Create'}
         </button>
       </form>
     </>

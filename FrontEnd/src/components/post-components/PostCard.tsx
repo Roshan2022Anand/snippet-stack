@@ -82,9 +82,12 @@ const PostCard = ({
         <section className="flex items-center">
           {authUserID === post.user_id && (
             <>
-              <button className="btn-accent-one ">
+              <Link
+                href={`/update/${post.post_id}`}
+                className="btn-accent-one "
+              >
                 <FaPen />
-              </button>
+              </Link>
               <DeletePostSection postID={post.post_id} imgUrl={post.image} />
             </>
           )}

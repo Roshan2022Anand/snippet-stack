@@ -54,16 +54,18 @@ const PostRoute: ServerRoute[] = [
         let posts;
         if (lastID > 0) {
           const { rows } = await pool.query(
-            `SELECT * FROM posts 
-              WHERE user_id = $1 AND post_id < $2 
+            `${BasicPostQuery} 
+              WHERE u.user_id = $1 AND post_id < $2 
+              GROUP BY u.user_id,p.post_id
               ORDER BY post_id DESC LIMIT 4`,
             [userID, lastID]
           );
           posts = rows;
         } else {
           const { rows } = await pool.query(
-            `SELECT * FROM posts 
-              WHERE user_id = $1
+            `${BasicPostQuery}
+              WHERE u.user_id = $1
+              GROUP BY u.user_id,p.post_id
               ORDER BY post_id DESC LIMIT 4`,
             [userID]
           );
@@ -93,7 +95,7 @@ const PostRoute: ServerRoute[] = [
           const { rows } = await pool.query(
             `${BasicPostQuery}
           WHERE (fname ILIKE $2 OR title ILIKE $2 OR description ILIKE $2 OR category ILIKE $2) AND p.post_id < $3
-          GROUP BY u.user_id,p.post_id;`,
+          GROUP BY u.user_id,p.post_id`,
             [user_id, `%${query}%`, lastID]
           );
           posts = rows;
@@ -161,7 +163,26 @@ const PostRoute: ServerRoute[] = [
   {
     path: "/api/post",
     method: "PUT",
-    handler: async (request: Request, h: ResponseToolkit) => {},
+    handler: async (request: Request, h: ResponseToolkit) => {
+      try {
+        const { user_id } = request.auth.credentials;
+
+        const {
+          postForm: { title, description, image, category, about },
+        } = request.payload as postData;
+
+        //query to update the post
+        await pool.query(
+          `UPDATE posts SET title = $1, description = $2, image = $3, about = $4, category = $5 WHERE user_id = $6`,
+          [title, description, image, about, category, user_id]
+        );
+
+        return h.response({ message: "Post created successfully" }).code(200);
+      } catch (err) {
+        console.log(err);
+        return h.response({ error: "Something went wrong" }).code(500);
+      }
+    },
   },
 
   //route to delete a post
