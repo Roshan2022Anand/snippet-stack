@@ -6,11 +6,12 @@ import { TiTick } from 'react-icons/ti';
 import { UserType } from '@/lib/types';
 import { toast } from 'react-toastify';
 import { fileToImageUrl, hapiApi } from '@/lib/client-utils';
-import { uploadImage } from '@/lib/supabaseStorage';
+import { deleteImage, uploadImage } from '@/lib/supabaseStorage';
 import axios from 'axios';
 
 const UserProfileForm = ({ session }: { session: UserType }) => {
   const { fname, bio, pic } = session;
+
   //refs
   const nameRef = useRef<HTMLInputElement>(null);
   const bioRef = useRef<HTMLInputElement>(null);
@@ -22,12 +23,14 @@ const UserProfileForm = ({ session }: { session: UserType }) => {
 
   //function to update user profile
   const handleSubmit = async () => {
-    const pic = await uploadImage(imageRef?.current?.files?.[0] as File);
+    if (pic && pic !== 'null') await deleteImage([pic as string]);
+
+    const picUrl = await uploadImage(imageRef?.current?.files?.[0] as File);
 
     const updatedUserData = {
       name: nameRef.current?.value,
       bio: bioRef.current?.value,
-      pic,
+      pic: picUrl,
     };
 
     //calling API then showing the toast message
@@ -83,7 +86,7 @@ const UserProfileForm = ({ session }: { session: UserType }) => {
               type="file"
               className="size-full absolute top-0 left-0 opacity-0"
               ref={imageRef}
-              onChange={(e) => {
+              onChange={async (e) => {
                 const url = fileToImageUrl(e);
                 setuserProfile(url);
               }}

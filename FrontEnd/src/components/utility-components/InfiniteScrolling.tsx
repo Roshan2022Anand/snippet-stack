@@ -1,9 +1,8 @@
-//@ts-nocheck
 'use client';
 import { useInView } from 'react-intersection-observer';
 import React, { useEffect, useState } from 'react';
 import PostCard from '@/components/post-components/PostCard';
-import { JoinPostUserType } from '@/lib/types';
+import { PostInfoType } from '@/lib/types';
 import { hapiApi } from '@/lib/client-utils';
 import { FiLoader } from 'react-icons/fi';
 
@@ -20,13 +19,13 @@ const InfiniteScrolling = ({
 }) => {
   const { ref, inView } = useInView();
   const [lastID, setLastID] = useState<number>(prevID);
-  const [allPosts, setAllPosts] = useState<JoinPostUserType[]>([]);
+  const [allPosts, setAllPosts] = useState<PostInfoType[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
     // Function to show more posts
     const showMorePosts = async () => {
-      let posts: JoinPostUserType[] = [];
+      let posts: PostInfoType[] = [];
       try {
         // Get the posts based on the query (for home page) or userID (for profile page)
         if (userID) {
@@ -58,6 +57,7 @@ const InfiniteScrolling = ({
     if (inView) {
       showMorePosts();
     }
+    /* eslint-disable react-hooks/exhaustive-deps */
   }, [inView]);
 
   return (

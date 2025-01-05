@@ -58,8 +58,9 @@ const Page = async ({
           ) : (
             <section className="grid grid-cols-1 lg:grid-cols-2 gap-2 px-2 w-[95vw] max-w-[1250px] mx-auto">
               {query && (
-                <h2 className="md-bold-text text-textPrimary">
-                  Search result "{query}"
+                <h2 className="md-bold-text text-textPrimary flex gap-2">
+                  Search result
+                  <p className="text-accentPrimary font-bold"> {query}</p>
                 </h2>
               )}
               {posts.map((post, index) => (

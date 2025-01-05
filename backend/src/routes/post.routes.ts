@@ -157,6 +157,13 @@ const PostRoute: ServerRoute[] = [
     },
   },
 
+  //route to update a post
+  {
+    path: "/api/post",
+    method: "PUT",
+    handler: async (request: Request, h: ResponseToolkit) => {},
+  },
+
   //route to delete a post
   {
     path: "/api/post",

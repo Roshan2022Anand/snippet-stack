@@ -60,8 +60,8 @@ const init = async () => {
     options: {
       auth: false,
     },
-    handler: (request: Request, h: ResponseToolkit) => {
-      return "Backend is working";
+    handler: () => {
+      return "Server is running!";
     },
   });
 

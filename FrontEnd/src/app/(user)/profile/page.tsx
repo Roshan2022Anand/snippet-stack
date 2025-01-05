@@ -4,7 +4,7 @@ import { FaArrowRight } from 'react-icons/fa';
 import UserProfileForm from '@/components/user-profile-components/UserProfileForm';
 import { hapiApi } from '@/lib/client-utils';
 import { getCookies } from '@/lib/server-utils';
-import { JoinPostUserType, UserType } from '@/lib/types';
+import { PostInfoType, UserType } from '@/lib/types';
 import SignOut from '@/components/user-profile-components/SignOut';
 import InfiniteScrolling from '@/components/utility-components/InfiniteScrolling';
 import PostCard from '@/components/post-components/PostCard';
@@ -22,7 +22,7 @@ const Page = async () => {
     params: { userID: session.user_id, lastID: 0 },
   });
 
-  const posts: JoinPostUserType[] = postRes.data.posts;
+  const posts: PostInfoType[] = postRes.data.posts;
 
   return (
     <>

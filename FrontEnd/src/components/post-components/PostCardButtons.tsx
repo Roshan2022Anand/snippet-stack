@@ -9,6 +9,7 @@ import { hapiApi } from '@/lib/client-utils';
 import { PostInfoType } from '@/lib/types';
 import { FaDownLong, FaUpLong } from 'react-icons/fa6';
 import { TbArrowBigDown, TbArrowBigUp } from 'react-icons/tb';
+import { deleteImage } from '@/lib/supabaseStorage';
 
 //component for voting the posts
 export const VoteSection = ({ post }: { post: PostInfoType }) => {
@@ -87,10 +88,17 @@ export const ViewsSection = ({ views }: { views: number }) => {
 };
 
 //component to delete the post
-export const DeletePostSection = ({ postID }: { postID: number }) => {
+export const DeletePostSection = ({
+  postID,
+  imgUrl,
+}: {
+  postID: number;
+  imgUrl: string;
+}) => {
   const deletePost = async () => {
     try {
       const res = await hapiApi.delete('/api/post', { data: { postID } });
+      await deleteImage([imgUrl]);
       toast.success(res.data.message);
     } catch (err) {
       console.log(err);

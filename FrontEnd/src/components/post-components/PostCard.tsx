@@ -9,7 +9,7 @@ import {
   VoteSection,
 } from '@/components/post-components/PostCardButtons';
 import { PostInfoType } from '@/lib/types';
-import { FaUser } from 'react-icons/fa';
+import { FaPen, FaUser } from 'react-icons/fa';
 
 const PostCard = ({
   post,
@@ -79,9 +79,14 @@ const PostCard = ({
           <CommentSection comments={post.comments} />
           <ViewsSection views={post.views} />
         </section>
-        <section>
+        <section className="flex items-center">
           {authUserID === post.user_id && (
-            <DeletePostSection postID={post.post_id} />
+            <>
+              <button className="btn-accent-one ">
+                <FaPen />
+              </button>
+              <DeletePostSection postID={post.post_id} imgUrl={post.image} />
+            </>
           )}
         </section>
       </footer>
