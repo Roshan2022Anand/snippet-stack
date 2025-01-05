@@ -27,13 +27,14 @@ const InfiniteScrolling = ({
     const showMorePosts = async () => {
       let posts: PostInfoType[] = [];
       try {
-        // Get the posts based on the query (for home page) or userID (for profile page)
         if (userID) {
+          // Get the posts based userID (for profile page)
           const res = await hapiApi.get('/api/alluserposts', {
             params: { userID, lastID },
           });
           posts = res.data.posts;
         } else {
+          // Get the posts based on query (for search page)
           const res = await hapiApi.get('/api/allposts', {
             params: { query, lastID },
           });

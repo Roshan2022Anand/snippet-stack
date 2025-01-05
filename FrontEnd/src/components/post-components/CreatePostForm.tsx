@@ -20,33 +20,6 @@ type postFormType = {
   about: string;
 };
 
-//function to send api req to create a post
-const createPostApiReq = async (postForm: postFormType) => {
-  try {
-    const res: AxiosResponse<{ message: string }> = await hapiApi.post(
-      '/api/post',
-      { postForm }
-    );
-    return { message: res.data.message };
-  } catch (err) {
-    console.log(err);
-    return { error: 'Something went wrong, Please try again later' };
-  }
-};
-
-const updatePostApiReq = async (postForm: postFormType) => {
-  try {
-    const res: AxiosResponse<{ message: string }> = await hapiApi.put(
-      '/api/post',
-      { postForm }
-    );
-    return { message: res.data.message };
-  } catch (err) {
-    console.log(err);
-    return { error: 'Something went wrong, Please try again later' };
-  }
-};
-
 const CreatePostForm = ({ id }: { id?: number }) => {
   const router = useRouter();
 
@@ -73,6 +46,34 @@ const CreatePostForm = ({ id }: { id?: number }) => {
     };
     if (id) getPostData();
   }, []);
+
+  //function to send api req to create a post
+  const createPostApiReq = async (postForm: postFormType) => {
+    try {
+      const res: AxiosResponse<{ message: string }> = await hapiApi.post(
+        '/api/post',
+        { postForm }
+      );
+      return { message: res.data.message };
+    } catch (err) {
+      console.log(err);
+      return { error: 'Something went wrong, Please try again later' };
+    }
+  };
+
+  //function to send api req to update a post
+  const updatePostApiReq = async (postForm: postFormType) => {
+    try {
+      const res: AxiosResponse<{ message: string }> = await hapiApi.put(
+        '/api/post',
+        { postForm, id }
+      );
+      return { message: res.data.message };
+    } catch (err) {
+      console.log(err);
+      return { error: 'Something went wrong, Please try again later' };
+    }
+  };
 
   //function to submit the post
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {

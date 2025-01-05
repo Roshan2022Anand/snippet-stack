@@ -23,7 +23,7 @@ const Page = async () => {
   });
 
   const posts: PostInfoType[] = postRes.data.posts;
-
+  
   return (
     <>
       <header className="flex w-full flex-col">

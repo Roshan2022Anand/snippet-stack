@@ -10,6 +10,7 @@ type postData = {
     category: string;
     about: string;
   };
+  id: number;
 };
 
 const PostRoute: ServerRoute[] = [
@@ -44,30 +45,30 @@ const PostRoute: ServerRoute[] = [
     method: "GET",
     handler: async (request: Request, h: ResponseToolkit) => {
       try {
+        const { user_id } = request.auth.credentials;
         const { userID, lastID } = request.query as {
           userID: number;
           lastID: number;
         };
 
-        //fetch all posts of the given user id or the logged in user
-
+        //fetch all posts related to user_id
         let posts;
         if (lastID > 0) {
           const { rows } = await pool.query(
             `${BasicPostQuery} 
-              WHERE u.user_id = $1 AND post_id < $2 
+              WHERE u.user_id = $2 AND p.post_id < $3 
               GROUP BY u.user_id,p.post_id
-              ORDER BY post_id DESC LIMIT 4`,
-            [userID, lastID]
+              ORDER BY p.post_id DESC LIMIT 4`,
+            [user_id, userID, lastID]
           );
           posts = rows;
         } else {
           const { rows } = await pool.query(
             `${BasicPostQuery}
-              WHERE u.user_id = $1
+              WHERE u.user_id = $2
               GROUP BY u.user_id,p.post_id
-              ORDER BY post_id DESC LIMIT 4`,
-            [userID]
+              ORDER BY p.post_id DESC LIMIT 4`,
+            [user_id, userID]
           );
           posts = rows;
         }
@@ -165,16 +166,15 @@ const PostRoute: ServerRoute[] = [
     method: "PUT",
     handler: async (request: Request, h: ResponseToolkit) => {
       try {
-        const { user_id } = request.auth.credentials;
-
         const {
           postForm: { title, description, image, category, about },
+          id,
         } = request.payload as postData;
 
         //query to update the post
         await pool.query(
-          `UPDATE posts SET title = $1, description = $2, image = $3, about = $4, category = $5 WHERE user_id = $6`,
-          [title, description, image, about, category, user_id]
+          `UPDATE posts SET title = $1, description = $2, image = $3, about = $4, category = $5 WHERE post_id = $6`,
+          [title, description, image, about, category, id]
         );
 
         return h.response({ message: "Post created successfully" }).code(200);
