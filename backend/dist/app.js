@@ -55,8 +55,8 @@ const init = async () => {
         options: {
             auth: false,
         },
-        handler: (request, h) => {
-            return "Backend is working";
+        handler: () => {
+            return "Server is running!";
         },
     });
     // Register the routes

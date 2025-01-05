@@ -41,12 +41,19 @@ const UserRoutes = [
         handler: async (request, h) => {
             try {
                 const { user_id } = request.auth.credentials;
+                //query to get the user pic and posts images to delete it from supabase storage
+                const { rows } = await dbConfig_1.default.query(`SELECT 
+            MAX(u.pic) AS pic,
+            ARRAY_AGG(p.image) AS img
+            FROM users u INNER JOIN posts p ON u.user_id = p.user_id
+            WHERE u.user_id = ${user_id}`);
+                const imgArr = [rows[0].pic, ...rows[0].img];
                 const { rowCount } = await dbConfig_1.default.query(`DELETE FROM users WHERE user_id = ${user_id}`);
                 //@ts-ignore
                 request.cookieAuth.clear();
                 if (rowCount)
                     return h
-                        .response({ message: "Account Deleted succesfully" })
+                        .response({ message: "Account Deleted succesfully", imgArr })
                         .code(200);
                 return h.response({ error: "User Not Found" }).code(404);
             }

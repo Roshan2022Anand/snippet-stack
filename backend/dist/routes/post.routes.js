@@ -119,6 +119,12 @@ const PostRoute = [
             }
         },
     },
+    //route to update a post
+    {
+        path: "/api/post",
+        method: "PUT",
+        handler: async (request, h) => { },
+    },
     //route to delete a post
     {
         path: "/api/post",
