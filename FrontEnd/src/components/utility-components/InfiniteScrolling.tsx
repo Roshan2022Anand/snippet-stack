@@ -25,6 +25,7 @@ const InfiniteScrolling = ({
   useEffect(() => {
     // Function to show more posts
     const showMorePosts = async () => {
+      console.log('showMorePosts');
       let posts: PostInfoType[] = [];
       try {
         if (userID) {
@@ -60,21 +61,21 @@ const InfiniteScrolling = ({
     }
     /* eslint-disable react-hooks/exhaustive-deps */
   }, [inView]);
-
+  console.log(loading);
   return (
     <>
       {allPosts.map((post, index) => (
         <PostCard key={index} post={post} authUserID={authUserID} />
       ))}
-      <div ref={ref}>
-        {loading ? (
+      {loading ? (
+        <div ref={ref}>
           <PostContainerSkeliton />
-        ) : (
-          <div className="my-3 h-10 w-[90%] mx-auto text-center text-bgSecondary">
-            No more posts to show
-          </div>
-        )}
-      </div>
+        </div>
+      ) : (
+        <div className="my-3 h-10 w-[90%] mx-auto text-center text-bgSecondary">
+          No more posts to show
+        </div>
+      )}
     </>
   );
 };

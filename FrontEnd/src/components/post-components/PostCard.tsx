@@ -18,7 +18,10 @@ const PostCard = ({
   authUserID?: number;
 }) => {
   return (
-    <article id={`post-${post.post_id}`} className="border-2 border-accentPrimary rounded-lg px-2 py-1 h-[300px] sm:h-[400px] lg:h-[400px]">
+    <article
+      id={`post-${post.post_id}`}
+      className="border-2 border-accentPrimary rounded-lg px-2 py-1 h-[300px] sm:h-[400px] lg:h-[400px]"
+    >
       <header className="flex gap-2 h-[15%]">
         <Link
           href={
@@ -65,7 +68,7 @@ const PostCard = ({
               alt={post.title}
               width={200}
               height={200}
-              className="object-cover w-full rounded-xl"
+              className="object-cover size-full"
               loading="lazy"
             />
           </section>
@@ -75,7 +78,12 @@ const PostCard = ({
       <footer className="h-[15%] flex justify-between">
         <section className="flex gap-3 w-1/2 md:w-[30%] lg:w-1/2 h-full">
           <VoteSection post={post} />
-          <CommentSection comments={post.comments} />
+          <Link
+            className="btn-accent-one flex grow items-end"
+            href={`/view/post/${post.post_id}`}
+          >
+            <CommentSection comments={post.comments} />
+          </Link>
         </section>
         <section className="flex items-center">
           {authUserID === post.user_id && (

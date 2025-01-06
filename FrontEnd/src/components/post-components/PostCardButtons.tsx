@@ -70,10 +70,10 @@ export const VoteSection = ({ post }: { post: PostInfoType }) => {
 //component for commenting the posts
 export const CommentSection = ({ comments }: { comments: number }) => {
   return (
-    <button className="btn-accent-one grow flex items-end">
+    <>
       <BiCommentDetail className="size-full" />
       <p>{comments}</p>
-    </button>
+    </>
   );
 };
 
