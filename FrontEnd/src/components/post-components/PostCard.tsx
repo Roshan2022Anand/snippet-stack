@@ -18,7 +18,7 @@ const PostCard = ({
   authUserID?: number;
 }) => {
   return (
-    <article className="border-2 border-accentPrimary rounded-lg px-2 py-1 h-[300px] sm:h-[400px] lg:h-[400px]">
+    <article id={`post-${post.post_id}`} className="border-2 border-accentPrimary rounded-lg px-2 py-1 h-[300px] sm:h-[400px] lg:h-[400px]">
       <header className="flex gap-2 h-[15%]">
         <Link
           href={

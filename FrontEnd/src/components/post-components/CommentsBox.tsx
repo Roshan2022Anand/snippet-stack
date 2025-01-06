@@ -22,7 +22,7 @@ const CommentsBox = ({ postID }: { postID: number }) => {
       setcomments(res.data.rows);
     };
     getComments();
-  }, []);
+  }, [postID]);
 
   //function to add comment
   const addComment = async () => {

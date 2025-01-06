@@ -10,6 +10,7 @@ import { PostInfoType } from '@/lib/types';
 import { FaDownLong, FaUpLong } from 'react-icons/fa6';
 import { TbArrowBigDown, TbArrowBigUp } from 'react-icons/tb';
 import { deleteImage } from '@/lib/supabaseStorage';
+import { LuLoader } from 'react-icons/lu';
 
 //component for voting the posts
 export const VoteSection = ({ post }: { post: PostInfoType }) => {
@@ -94,10 +95,14 @@ export const DeletePostSection = ({
   postID: number;
   imgUrl: string;
 }) => {
+  const [loading, setloading] = useState<boolean>(false);
   const deletePost = async () => {
+    setloading(true);
+    const postEle = document.getElementById(`post-${postID}`);
     try {
       const res = await hapiApi.delete('/api/post', { data: { postID } });
       await deleteImage([imgUrl]);
+      postEle?.remove();
       toast.success(res.data.message);
     } catch (err) {
       console.log(err);
@@ -106,7 +111,11 @@ export const DeletePostSection = ({
   };
   return (
     <button onClick={deletePost} className="h-full">
-      <MdDeleteForever className="size-full p-2 text-red-500" />
+      {loading ? (
+        <LuLoader className="size-full p-2 animate-spin text-accentPrimary" />
+      ) : (
+        <MdDeleteForever className="size-full p-2 text-red-500" />
+      )}
     </button>
   );
 };
