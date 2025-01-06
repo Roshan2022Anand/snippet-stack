@@ -56,30 +56,32 @@ const Page = async ({
               No Posts Found
             </div>
           ) : (
-            <section className="grid grid-cols-1 lg:grid-cols-2 gap-2 px-2 w-[95vw] max-w-[1250px] mx-auto">
+            <>
               {query && (
-                <h2 className="md-bold-text text-textPrimary flex gap-2">
+                <h2 className="md-bold-text flex gap-2 pl-5 w-[95vw] max-w-[1250px]">
                   Search result
                   <p className="text-accentPrimary font-bold"> {query}</p>
                 </h2>
               )}
-              {posts.map((post, index) => (
-                <PostCard
-                  key={`initial-${index}`}
-                  post={post}
+              <section className="grid grid-cols-1 lg:grid-cols-2 gap-2 px-2 w-[95vw] max-w-[1250px] mx-auto">
+                {posts.map((post, index) => (
+                  <PostCard
+                    key={`initial-${index}`}
+                    post={post}
+                    authUserID={session?.user_id}
+                  />
+                ))}
+                <InfiniteScrolling
+                  prevID={posts[posts.length - 1].post_id}
+                  query={query}
                   authUserID={session?.user_id}
                 />
-              ))}
-              <InfiniteScrolling
-                prevID={posts[posts.length - 1].post_id}
-                query={query}
-                authUserID={session?.user_id}
-              />
-            </section>
+              </section>
+            </>
           )}
         </main>
       ) : (
-        <h3>Please Login To see the posts</h3>
+        <h3 className='text-center font-bold text-[4vw] '>Please Login To see the posts</h3>
       )}
     </>
   );

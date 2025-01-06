@@ -144,12 +144,13 @@ const PostRoute: ServerRoute[] = [
     method: "GET",
     handler: async (request: Request, h: ResponseToolkit) => {
       try {
+        const { user_id } = request.auth.credentials;
         const { postId } = request.query as { postId: string };
         const { rows } = await pool.query(
           `${BasicPostQuery}
-            WHERE p.post_id = $1
+            WHERE p.post_id = $2
             GROUP BY u.user_id, p.post_id`,
-          [postId]
+          [user_id,postId]
         );
         if (!rows[0]) return h.response({ error: "Post not found" }).code(404);
         return h.response({ postData: rows[0] }).code(200);

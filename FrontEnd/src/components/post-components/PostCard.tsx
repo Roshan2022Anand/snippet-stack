@@ -73,7 +73,7 @@ const PostCard = ({
       </main>
 
       <footer className="h-[15%] flex justify-between">
-        <section className="flex gap-3 w-1/2 md:w-2/3 h-full">
+        <section className="flex gap-3 w-1/2 md:w-[30%] lg:w-1/2 h-full">
           <VoteSection post={post} />
           <CommentSection comments={post.comments} />
         </section>
