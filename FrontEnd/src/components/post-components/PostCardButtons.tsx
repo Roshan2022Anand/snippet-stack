@@ -14,7 +14,6 @@ import { deleteImage } from '@/lib/supabaseStorage';
 //component for voting the posts
 export const VoteSection = ({ post }: { post: PostInfoType }) => {
   const { up_votes, down_votes, voted, post_id } = post;
-  console.log(voted);
   const [up, setup] = useState<number>(up_votes);
   const [down, setdown] = useState<number>(down_votes);
   const [isVoted, setisVoted] = useState(voted);

@@ -1,7 +1,7 @@
 import React from 'react';
 import Link from 'next/link';
 import { PostInfoType } from '@/lib/types';
-import { FaArrowRight } from 'react-icons/fa';
+import { FaArrowRight, FaUser } from 'react-icons/fa';
 import { formatDate, hapiApi } from '@/lib/client-utils';
 import Image from 'next/image';
 import MarkdownIt from 'markdown-it';
@@ -54,15 +54,18 @@ const Page = async ({ params }: { params: Promise<{ id: string }> }) => {
               {/* user profile */}
               <div className="w-1/2 flex items-start justify-end lg:flex-row-reverse gap-2">
                 <p className="font-bold text-[30px]">{postData.fname}</p>
-                {postData.pic && (
+                <div className="overflow-hidden rounded-full size-[70px] border-2 border-accentPrimary">
+                  {postData.pic && postData.pic !== 'null' ?
                   <Image
                     src={`${postData.pic}`}
                     alt={`${postData.fname}`}
                     width={100}
                     height={100}
-                    className="rounded-full size-[70px]  object-cover border-2 border-accentPrimary"
-                  />
-                )}
+                    className="object-cover size-full"
+                  />:
+                  <FaUser className='size-full bg-accentPrimary p-2'/>
+                  }
+                </div>
               </div>
             </article>
             <div className="bg-bgPrimary size-full lg:size-[400px]  border-2 border-accentPrimary rounded-md overflow-hidden">
@@ -81,18 +84,17 @@ const Page = async ({ params }: { params: Promise<{ id: string }> }) => {
       <main className="px-3 rounded-md mx-auto w-[85%] max-w-[800px]">
         {htmlOutput && (
           <article
-            className="prose"
+            className="prose markdown-body"
             dangerouslySetInnerHTML={{ __html: htmlOutput }}
           ></article>
         )}
       </main>
 
-      <footer className="h-[70px] w-[85%] mx-auto max-w-[800px] px-2">
-        <section className="flex gap-3 w-1/2 h-full my-2 mb-12">
+      <footer className="w-[85%] mx-auto max-w-[800px] px-2">
+        <section className="flex gap-3 w-1/2 h-[70px] my-2">
           <VoteSection post={postData} />
           <ViewsSection views={postData.views} />
         </section>
-
         {/* comment section */}
         <CommentsBox postID={postData.post_id} />
       </footer>

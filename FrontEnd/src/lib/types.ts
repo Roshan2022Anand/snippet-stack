@@ -1,14 +1,3 @@
-export type PostType = {
-  post_id: number;
-  title: string;
-  description: string;
-  image: string;
-  about: string;
-  category: string;
-  views: number;
-  created_at: Date;
-};
-
 export type UserType = {
   user_id: number;
   fname: string;
@@ -17,8 +6,6 @@ export type UserType = {
   pic: string | null;
   bio: string;
 };
-
-export type JoinPostUserType = PostType & UserType;
 
 export type PostInfoType = {
   user_id: number;
@@ -36,4 +23,12 @@ export type PostInfoType = {
   down_votes: number;
   voted: number;
   comments: number;
+};
+
+export type CommentType = {
+  pic: string | null;
+  fname: string;
+  user_id: number;
+  fcontent: string;
+  created_at: Date;
 };
