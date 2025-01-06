@@ -18,7 +18,7 @@ const page = async ({ params }: { params: Promise<{ id: number }> }) => {
             </Link>
           </button>
         </nav>
-        <section className="mb-5 flex items-center justify-center bg-bgSecondary py-3">
+        <section className="heading">
           <h1>Update Your post</h1>
         </section>
       </header>

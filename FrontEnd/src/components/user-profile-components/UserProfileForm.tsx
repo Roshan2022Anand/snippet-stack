@@ -104,7 +104,7 @@ const UserProfileForm = ({ session }: { session: UserType }) => {
             ref={nameRef}
             defaultValue={fname}
             disabled={!editState}
-            className="bg-transparent grow px-1"
+            className="bg-transparent backdrop-blur-sm grow px-1"
           />
         </fieldset>
         <label>Bio</label>
@@ -114,7 +114,7 @@ const UserProfileForm = ({ session }: { session: UserType }) => {
             defaultValue={bio}
             ref={bioRef}
             disabled={!editState}
-            className="bg-transparent grow px-1"
+            className="bg-transparent backdrop-blur-sm grow px-1"
           />
         </fieldset>
       </section>

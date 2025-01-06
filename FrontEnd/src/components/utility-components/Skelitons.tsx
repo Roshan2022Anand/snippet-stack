@@ -80,7 +80,7 @@ const PostCardSkeliton = () => {
 
 //skeliton for post container
 export const PostContainerSkeliton = () => {
-  let skelitons = [];
+  const skelitons = [];
   for (let i = 0; i < 4; i++) {
     skelitons.push(<PostCardSkeliton key={i} />);
   }

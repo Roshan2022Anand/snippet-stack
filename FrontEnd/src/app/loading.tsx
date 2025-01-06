@@ -10,7 +10,7 @@ const loading = () => {
     <>
       <header className="w-full">
         <NavSkeliton />
-        <section className="mb-5 flex flex-col items-center justify-center gap-3 bg-bgSecondary py-3">
+        <section className="heading">
           <h1> Find the Programming insights here</h1>
           <SearchBar />
         </section>

@@ -6,7 +6,6 @@ import { formatDate, hapiApi } from '@/lib/client-utils';
 import Image from 'next/image';
 import MarkdownIt from 'markdown-it';
 import {
-  CommentSection,
   ViewsSection,
   VoteSection,
 } from '@/components/post-components/PostCardButtons';
@@ -40,7 +39,7 @@ const Page = async ({ params }: { params: Promise<{ id: string }> }) => {
           </Link>
         </nav>
 
-        <section className="w-full px-2 mb-5 flex flex-col items-center gap-2 bg-bgSecondary py-2">
+        <section className="heading">
           <div className="w-[85%] max-w-[700px]">
             <article className="flex justify-between p-1">
               <div>
@@ -88,14 +87,11 @@ const Page = async ({ params }: { params: Promise<{ id: string }> }) => {
       <footer className="h-[70px] mb-10 flex justify-between px-2">
         <section className="flex gap-3 w-1/2 md:w-2/3 h-full my-2">
           <VoteSection post={postData} />
-          <CommentSection comments={postData.comments} />
           <ViewsSection views={postData.views} />
         </section>
-        {/* <section>
-          {authUserID === post.user_id && (
-            <DeletePostSection postID={post.post_id} />
-          )}
-        </section> */}
+
+        {/* comment section */}
+        <section className="border-2 border-red-500"></section>
       </footer>
     </>
   );

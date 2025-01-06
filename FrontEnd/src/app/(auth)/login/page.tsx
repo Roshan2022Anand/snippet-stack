@@ -5,6 +5,7 @@ import { toast } from 'react-toastify';
 import { useRouter } from 'next/navigation';
 import { hapiApi } from '@/lib/client-utils';
 import axios from 'axios';
+import { FaArrowLeft } from 'react-icons/fa';
 
 const Page = () => {
   const router = useRouter();
@@ -35,9 +36,12 @@ const Page = () => {
 
   return (
     <main className=" w-full h-screen flex items-center bg-bgPrimary justify-between">
+      <Link href="/" className="btn-accent-one absolute top-2 left-2">
+        <FaArrowLeft />
+      </Link>
       <form
         onSubmit={handleSubmit}
-        className="flex flex-col py-1 rounded-lg px-3 mx-auto sm:ml-auto"
+        className="w-[40%] max-w-[400px] flex flex-col py-1 rounded-lg px-3 mx-auto sm:ml-auto"
       >
         <h2 className="font-bold border-b-2 border-textPrimary">Login</h2>
 
@@ -74,7 +78,7 @@ const Page = () => {
           </Link>
         </p>
       </form>
-      <div className="h-full w-1/2 bg-bgSecondary hidden sm:block"></div>
+      <div className="h-full w-1/2 side-wall hidden sm:block"></div>
     </main>
   );
 };

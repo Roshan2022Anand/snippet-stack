@@ -44,8 +44,8 @@ const Page = async ({
     <>
       <header className="w-full">
         <NavBar session={session} />
-        <section className="mb-5 flex flex-col items-center justify-center gap-3 bg-bgSecondary py-3">
-          <h1> Find the Programming insights here</h1>
+        <section className="heading">
+          <h1> Find Programming insights here</h1>
           <SearchBar query={query} />
         </section>
       </header>

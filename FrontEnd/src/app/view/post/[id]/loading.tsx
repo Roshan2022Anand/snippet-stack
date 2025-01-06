@@ -8,19 +8,19 @@ const Loading = () => {
   return (
     <>
       <NavSkeliton />
-      <section className="w-full flex bg-bgSecondary py-2">
+      <section className="heading">
         <div className="w-[85%] max-w-[700px] mx-auto">
           <article className="flex justify-between p-1">
             <div className="flex flex-col gap-2">
-              <p className="w-[50px] h-[15px] skeliton-parent">
+              <div className="w-[50px] h-[15px] skeliton-parent">
                 <Skeliton />
-              </p>
-              <p className="w-[40px] h-[10px]  skeliton-parent">
+              </div>
+              <div className="w-[40px] h-[10px]  skeliton-parent">
                 <Skeliton />
-              </p>
-              <p className="w-[60px] h-[8px]  skeliton-parent">
+              </div>
+              <div className="w-[60px] h-[8px]  skeliton-parent">
                 <Skeliton />
-              </p>
+              </div>
             </div>
             <div className="flex gap-2">
               <div className="skeliton-parent w-[100px] h-10">

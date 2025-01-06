@@ -42,7 +42,7 @@ const Page = async ({ params }: { params: Promise<{ id: string }> }) => {
           </button>
         </nav>
 
-        <section className="mb-5 flex w-full flex-col items-center justify-center gap-2 bg-bgSecondary py-2">
+        <section className="heading">
           <h1>{user.fname} Profile</h1>
           <article className="w-1/2  flex gap-2 justify-around">
             <div className="bg-accentPrimary rounded-xl h-[100px] p-1 overflow-hidden">

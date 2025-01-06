@@ -15,7 +15,7 @@ const Page = () => {
             </Link>
           </button>
         </nav>
-        <section className="mb-5 flex items-center justify-center bg-bgSecondary py-3">
+        <section className="heading">
           <h1>Create Your post</h1>
         </section>
       </header>

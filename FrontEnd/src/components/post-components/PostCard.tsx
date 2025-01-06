@@ -5,7 +5,6 @@ import { formatDate } from '@/lib/client-utils';
 import {
   CommentSection,
   DeletePostSection,
-  ViewsSection,
   VoteSection,
 } from '@/components/post-components/PostCardButtons';
 import { PostInfoType } from '@/lib/types';
@@ -77,7 +76,6 @@ const PostCard = ({
         <section className="flex gap-3 w-1/2 md:w-2/3 h-full">
           <VoteSection post={post} />
           <CommentSection comments={post.comments} />
-          <ViewsSection views={post.views} />
         </section>
         <section className="flex items-center">
           {authUserID === post.user_id && (

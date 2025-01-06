@@ -4,7 +4,6 @@ import React, { useEffect, useState } from 'react';
 import PostCard from '@/components/post-components/PostCard';
 import { PostInfoType } from '@/lib/types';
 import { hapiApi } from '@/lib/client-utils';
-import { FiLoader } from 'react-icons/fi';
 import { PostContainerSkeliton } from './Skelitons';
 
 const InfiniteScrolling = ({

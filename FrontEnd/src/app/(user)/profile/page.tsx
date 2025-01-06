@@ -36,7 +36,7 @@ const Page = async () => {
           </button>
         </nav>
 
-        <section className="mb-5 flex w-full flex-col items-center justify-center gap-2 bg-bgSecondary py-2">
+        <section className="heading">
           <h1>Your Profile</h1>
           <div className="w-[90%] max-w-[800px] flex">
             <UserProfileForm session={session} />
