@@ -38,7 +38,7 @@ export const VoteSection = ({ post }: { post: PostInfoType }) => {
     <div className="bg-accentPrimary flex items-center grow-[2] justify-evenly rounded-md">
       <button className="h-fit w-[45%] flex items-end text-white">
         {isVoted == 1 ? (
-          <FaUpLong className="size-2/3" />
+          <FaUpLong className="size-[50%]" />
         ) : (
           <TbArrowBigUp
             className="size-2/3"
@@ -52,7 +52,7 @@ export const VoteSection = ({ post }: { post: PostInfoType }) => {
       <div className="w-[2px] h-2/3 bg-bgPrimary"></div>
       <button className="h-fit w-[45%] flex items-end text-white">
         {isVoted == 0 ? (
-          <FaDownLong className="size-2/3" />
+          <FaDownLong className="size-[50%]" />
         ) : (
           <TbArrowBigDown
             className="size-2/3"

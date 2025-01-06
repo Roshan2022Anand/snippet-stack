@@ -46,7 +46,7 @@ const UserProfileForm = ({ session }: { session: UserType }) => {
   return (
     <form
       onSubmit={(e) => e.preventDefault()}
-      className="flex flex-col sm:flex-row-reverse  items-center justify-around w-2/3 relative"
+      className="flex flex-col sm:flex-row  items-center justify-around w-2/3 relative"
     >
       <section className="absolute top-1 right-1 z-10">
         {editState ? (
@@ -104,7 +104,7 @@ const UserProfileForm = ({ session }: { session: UserType }) => {
             ref={nameRef}
             defaultValue={fname}
             disabled={!editState}
-            className="bg-transparent grow"
+            className="bg-transparent grow px-1"
           />
         </fieldset>
         <label>Bio</label>
@@ -114,7 +114,7 @@ const UserProfileForm = ({ session }: { session: UserType }) => {
             defaultValue={bio}
             ref={bioRef}
             disabled={!editState}
-            className="bg-transparent grow"
+            className="bg-transparent grow px-1"
           />
         </fieldset>
       </section>

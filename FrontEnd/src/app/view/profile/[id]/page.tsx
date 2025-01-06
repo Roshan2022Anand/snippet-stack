@@ -1,11 +1,9 @@
 import React from 'react';
 import Link from 'next/link';
 import { FaArrowRight, FaUser } from 'react-icons/fa';
-import UserProfileForm from '@/components/user-profile-components/UserProfileForm';
 import { hapiApi } from '@/lib/client-utils';
 import { getCookies } from '@/lib/server-utils';
 import { PostInfoType, UserType } from '@/lib/types';
-import SignOut from '@/components/user-profile-components/SignOut';
 import InfiniteScrolling from '@/components/utility-components/InfiniteScrolling';
 import PostCard from '@/components/post-components/PostCard';
 import Image from 'next/image';
@@ -45,7 +43,7 @@ const Page = async ({ params }: { params: Promise<{ id: string }> }) => {
         </nav>
 
         <section className="mb-5 flex w-full flex-col items-center justify-center gap-2 bg-bgSecondary py-2">
-          <h1>{user.fname}'s Profile</h1>
+          <h1>{user.fname} Profile</h1>
           <article className="w-1/2  flex gap-2 justify-around">
             <div className="bg-accentPrimary rounded-xl h-[100px] p-1 overflow-hidden">
               {user.pic && user.pic !== 'null' ? (
@@ -64,9 +62,7 @@ const Page = async ({ params }: { params: Promise<{ id: string }> }) => {
               <p className="border-b-2 border-accentPrimary w-fit text-[25px] font-bold">
                 {user.fname}
               </p>
-              <p className="text-[10px]">
-                {user.bio}{' '}
-              </p>
+              <p className="text-[10px]">{user.bio}</p>
             </div>
           </article>
         </section>

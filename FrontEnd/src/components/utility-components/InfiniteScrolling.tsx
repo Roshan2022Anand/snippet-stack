@@ -5,6 +5,7 @@ import PostCard from '@/components/post-components/PostCard';
 import { PostInfoType } from '@/lib/types';
 import { hapiApi } from '@/lib/client-utils';
 import { FiLoader } from 'react-icons/fi';
+import { PostContainerSkeliton } from './Skelitons';
 
 const InfiniteScrolling = ({
   prevID,
@@ -66,13 +67,11 @@ const InfiniteScrolling = ({
       {allPosts.map((post, index) => (
         <PostCard key={index} post={post} authUserID={authUserID} />
       ))}
-      <div ref={ref} className="my-3 h-10 w-screen text-center">
+      <div ref={ref}>
         {loading ? (
-          <div className="mx-auto w-full">
-            <FiLoader className="size-[55px] block mx-auto animate-spin text-accentPrimary" />
-          </div>
+          <PostContainerSkeliton />
         ) : (
-          <div className="text-center text-bgSecondary">
+          <div className="my-3 h-10 w-[90%] mx-auto text-center text-bgSecondary">
             No more posts to show
           </div>
         )}

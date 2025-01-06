@@ -10,6 +10,7 @@ import { AxiosResponse } from 'axios';
 import { uploadImage } from '@/lib/supabaseStorage';
 import { fileToImageUrl, hapiApi } from '@/lib/client-utils';
 import { PostInfoType } from '@/lib/types';
+import { PostFormSkeliton } from '../utility-components/Skelitons';
 
 //post form type
 type postFormType = {
@@ -34,8 +35,8 @@ const CreatePostForm = ({ id }: { id?: number }) => {
   const [isPending, setisPending] = useState<boolean>(false);
   const [postData, setpostData] = useState<PostInfoType>();
 
+  //if id is present then get the post data to update
   useEffect(() => {
-    //if id is present then get the post data to update
     const getPostData = async () => {
       const res = await hapiApi.get('/api/post', {
         params: { postId: id },
@@ -45,7 +46,7 @@ const CreatePostForm = ({ id }: { id?: number }) => {
       setAbout(res.data.postData.about);
     };
     if (id) getPostData();
-  }, []);
+  }, [id]);
 
   //function to send api req to create a post
   const createPostApiReq = async (postForm: postFormType) => {
@@ -121,97 +122,101 @@ const CreatePostForm = ({ id }: { id?: number }) => {
 
   return (
     <>
-      <form
-        onSubmit={handleSubmit}
-        className="create-form flex flex-col w-[90%] max-w-[900px] mx-auto"
-      >
-        <label htmlFor="title">Title:</label>
-        <input
-          defaultValue={id ? postData?.title : ''}
-          name="title"
-          className="input-field"
-          type="text"
-          maxLength={45}
-          placeholder="eg:How to use for loop.."
-          required
-        />
-        {formError.title && <p className="text-red-500">{formError.title}</p>}
-
-        <label htmlFor="desc">Description:</label>
-        <textarea
-          defaultValue={id ? postData?.description : ''}
-          name="desc"
-          className="input-field"
-          placeholder="eg:This is a tutorial on how to use for loop in JavaScript"
-          required
-        />
-        {formError.description && (
-          <p className="text-red-500">{formError.description}</p>
-        )}
-
-        <label htmlFor="image">Poster:</label>
-        {userProfile && (
-          <Image
-            src={`${userProfile}`}
-            alt="image"
-            width={100}
-            height={100}
-            className="size-[10vw] object-cover"
-          />
-        )}
-        <input
-          name="image"
-          id="image"
-          className="input-field"
-          type="file"
-          accept="image/*"
-          onChange={(e) => {
-            const url = fileToImageUrl(e);
-            setUserProfile(url);
-          }}
-          required
-        />
-
-        <label htmlFor="category">Choose The Tech:</label>
-        <input
-          defaultValue={id ? postData?.category : ''}
-          name="category"
-          className="input-field"
-          type="text"
-          placeholder="eg:JavaScript"
-          required
-        />
-
-        <div data-color-mode="light">
-          <label htmlFor="about">Detailed Explanation:</label>
-          <MDEditor
-            value={about}
-            onChange={(value?: string) => setAbout(value as string)}
-            id="about"
-            preview="edit"
-            height={300}
-            className="input-field"
-            textareaProps={{
-              placeholder: 'Write a detailed explanation of the query',
-            }}
-            previewOptions={{ disallowedElements: ['style'] }}
-          />
-        </div>
-        {formError.about && <p className="text-red-500">{formError.about}</p>}
-
-        <button
-          type="submit"
-          className="w-full my-5 rounded-lg bg-accentPrimary p-1 px-5 border-2 border-textPrimary text-bgPrimary font-bold"
+      {id && !postData ? (
+        <PostFormSkeliton />
+      ) : (
+        <form
+          onSubmit={handleSubmit}
+          className="create-form flex flex-col w-[90%] max-w-[900px] mx-auto"
         >
-          {isPending
-            ? id
-              ? 'Updating the Post'
-              : 'Submiting the Post ....'
-            : id
-              ? 'Update'
-              : 'Create'}
-        </button>
-      </form>
+          <label htmlFor="title">Title:</label>
+          <input
+            defaultValue={id ? postData?.title : ''}
+            name="title"
+            className="input-field"
+            type="text"
+            maxLength={45}
+            placeholder="eg:How to use for loop.."
+            required
+          />
+          {formError.title && <p className="text-red-500">{formError.title}</p>}
+
+          <label htmlFor="desc">Description:</label>
+          <textarea
+            defaultValue={id ? postData?.description : ''}
+            name="desc"
+            className="input-field"
+            placeholder="eg:This is a tutorial on how to use for loop in JavaScript"
+            required
+          />
+          {formError.description && (
+            <p className="text-red-500">{formError.description}</p>
+          )}
+
+          <label htmlFor="image">Poster:</label>
+          {userProfile && (
+            <Image
+              src={`${userProfile}`}
+              alt="image"
+              width={100}
+              height={100}
+              className="size-[10vw] object-cover"
+            />
+          )}
+          <input
+            name="image"
+            id="image"
+            className="input-field"
+            type="file"
+            accept="image/*"
+            onChange={(e) => {
+              const url = fileToImageUrl(e);
+              setUserProfile(url);
+            }}
+            required
+          />
+
+          <label htmlFor="category">Choose The Tech:</label>
+          <input
+            defaultValue={id ? postData?.category : ''}
+            name="category"
+            className="input-field"
+            type="text"
+            placeholder="eg:JavaScript"
+            required
+          />
+
+          <div data-color-mode="light">
+            <label htmlFor="about">Detailed Explanation:</label>
+            <MDEditor
+              value={about}
+              onChange={(value?: string) => setAbout(value as string)}
+              id="about"
+              preview="edit"
+              height={300}
+              className="input-field"
+              textareaProps={{
+                placeholder: 'Write a detailed explanation of the query',
+              }}
+              previewOptions={{ disallowedElements: ['style'] }}
+            />
+          </div>
+          {formError.about && <p className="text-red-500">{formError.about}</p>}
+
+          <button
+            type="submit"
+            className="w-full my-5 rounded-lg bg-accentPrimary p-1 px-5 border-2 border-textPrimary text-bgPrimary font-bold"
+          >
+            {isPending
+              ? id
+                ? 'Updating the Post'
+                : 'Submiting the Post ....'
+              : id
+                ? 'Update'
+                : 'Create'}
+          </button>
+        </form>
+      )}
     </>
   );
 };

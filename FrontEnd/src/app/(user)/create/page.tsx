@@ -3,7 +3,7 @@ import CreatePostForm from '@/components/post-components/CreatePostForm';
 import { FaArrowRightFromBracket } from 'react-icons/fa6';
 import Link from 'next/link';
 
-const Page = async () => {
+const Page = () => {
   return (
     <>
       <header>
@@ -19,7 +19,7 @@ const Page = async () => {
           <h1>Create Your post</h1>
         </section>
       </header>
-      <CreatePostForm/>;
+      <CreatePostForm />;
     </>
   );
 };
