@@ -7,7 +7,7 @@ import { PostFormValidation } from '@/lib/validations';
 import { useRouter } from 'next/navigation';
 import { toast } from 'react-toastify';
 import { AxiosResponse } from 'axios';
-import { uploadImage } from '@/lib/supabaseStorage';
+import { deleteImage, uploadImage } from '@/lib/supabaseStorage';
 import { fileToImageUrl, hapiApi } from '@/lib/client-utils';
 import { PostInfoType } from '@/lib/types';
 import { PostFormSkeliton } from '../utility-components/Skelitons';
@@ -25,7 +25,7 @@ const CreatePostForm = ({ id }: { id?: number }) => {
   const router = useRouter();
 
   //All the states
-  const [userProfile, setUserProfile] = useState<string | null>(null);
+  const [postImage, setpostImage] = useState<string | null>(null);
   const [about, setAbout] = useState('');
   const [formError, setFormError] = useState<{
     title?: string;
@@ -42,7 +42,7 @@ const CreatePostForm = ({ id }: { id?: number }) => {
         params: { postId: id },
       });
       setpostData(res.data.postData);
-      setUserProfile(res.data.postData.image);
+      setpostImage(res.data.postData.image);
       setAbout(res.data.postData.about);
     };
     if (id) getPostData();
@@ -82,8 +82,11 @@ const CreatePostForm = ({ id }: { id?: number }) => {
     setFormError({});
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
+    const imageFile = formData.get('image') as File;
+    const imgUrl =
+      imageFile.size > 0 ? await uploadImage(imageFile) : postImage;
 
-    const imgUrl = await uploadImage(formData.get('image') as File);
+    if (imageFile.size > 0 && postData) await deleteImage([postData.image]);
 
     //creating post object
     const postForm = {
@@ -154,9 +157,9 @@ const CreatePostForm = ({ id }: { id?: number }) => {
           )}
 
           <label htmlFor="image">Poster:</label>
-          {userProfile && (
+          {postImage && (
             <Image
-              src={`${userProfile}`}
+              src={`${postImage}`}
               alt="image"
               width={100}
               height={100}
@@ -171,9 +174,9 @@ const CreatePostForm = ({ id }: { id?: number }) => {
             accept="image/*"
             onChange={(e) => {
               const url = fileToImageUrl(e);
-              setUserProfile(url);
+              setpostImage(url);
             }}
-            required
+            required={!id}
           />
 
           <label htmlFor="category">Choose The Tech:</label>
@@ -209,7 +212,7 @@ const CreatePostForm = ({ id }: { id?: number }) => {
           >
             {isPending
               ? id
-                ? 'Updating the Post'
+                ? 'Updating the Post ...'
                 : 'Submiting the Post ....'
               : id
                 ? 'Update'

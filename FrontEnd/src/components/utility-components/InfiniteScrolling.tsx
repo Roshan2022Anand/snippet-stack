@@ -61,7 +61,6 @@ const InfiniteScrolling = ({
     }
     /* eslint-disable react-hooks/exhaustive-deps */
   }, [inView]);
-  console.log(loading);
   return (
     <>
       {allPosts.map((post, index) => (
