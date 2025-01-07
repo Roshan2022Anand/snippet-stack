@@ -55,16 +55,17 @@ const Page = async ({ params }: { params: Promise<{ id: string }> }) => {
               <div className="w-1/2 flex items-start justify-end lg:flex-row-reverse gap-2">
                 <p className="font-bold text-[30px]">{postData.fname}</p>
                 <div className="overflow-hidden rounded-full size-[70px] border-2 border-accentPrimary">
-                  {postData.pic && postData.pic !== 'null' ?
-                  <Image
-                    src={`${postData.pic}`}
-                    alt={`${postData.fname}`}
-                    width={100}
-                    height={100}
-                    className="object-cover size-full"
-                  />:
-                  <FaUser className='size-full bg-accentPrimary p-2'/>
-                  }
+                  {postData.pic && postData.pic !== 'null' ? (
+                    <Image
+                      src={`${postData.pic}`}
+                      alt={`${postData.fname}`}
+                      width={100}
+                      height={100}
+                      className="object-cover size-full"
+                    />
+                  ) : (
+                    <FaUser className="size-full bg-accentPrimary p-2" />
+                  )}
                 </div>
               </div>
             </article>

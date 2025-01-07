@@ -25,7 +25,6 @@ const InfiniteScrolling = ({
   useEffect(() => {
     // Function to show more posts
     const showMorePosts = async () => {
-      console.log('showMorePosts');
       let posts: PostInfoType[] = [];
       try {
         if (userID) {
@@ -71,7 +70,7 @@ const InfiniteScrolling = ({
           <PostContainerSkeliton />
         </div>
       ) : (
-        <div className="my-3 h-10 w-[90%] mx-auto text-center text-bgSecondary">
+        <div className="my-3 h-10 w-[90vw] mx-auto text-center text-accentPrimary font-bold text[20px]">
           No more posts to show
         </div>
       )}
