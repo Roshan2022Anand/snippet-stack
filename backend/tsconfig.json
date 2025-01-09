@@ -8,9 +8,9 @@
     "forceConsistentCasingInFileNames": true,
     "outDir": "./dist",
     "rootDir": "./src",
-    "types": ["@hapi/hapi", "node",],
+    "types": ["@hapi/hapi", "node"],
     "typeRoots": ["node_modules/@types"]
   },
-  "include": ["src", "types", "hapi-auth.d.ts"],
+  "include": ["node_modules/@types", "src", "types", "hapi-auth.d.ts"],
   "exclude": ["node_modules", "dist"]
 }
