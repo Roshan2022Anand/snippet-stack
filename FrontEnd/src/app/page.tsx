@@ -81,7 +81,9 @@ const Page = async ({
           )}
         </main>
       ) : (
-        <h3 className='text-center font-bold text-[4vw] '>Please Login To see the posts</h3>
+        <h3 className="text-center font-bold text-[4vw] ">
+          Please Login To see the posts
+        </h3>
       )}
     </>
   );

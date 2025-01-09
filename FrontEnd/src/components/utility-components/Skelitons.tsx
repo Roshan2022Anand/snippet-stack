@@ -85,8 +85,11 @@ export const PostContainerSkeliton = () => {
     skelitons.push(<PostCardSkeliton key={i} />);
   }
   return (
-    <main className="grid grid-cols-1 lg:grid-cols-2 gap-2 px-2 w-[95vw] max-w-[1250px] mx-auto">
-      {window.innerWidth > 1024 ? skelitons : <PostCardSkeliton />}
+    <main className="w-[95vw] max-w-[1250px] mx-auto">
+      <div className="hidden lg:grid grid-cols-2 gap-2 px-2">{skelitons}</div>
+      <div className="lg:hidden">
+        <PostCardSkeliton />
+      </div>
     </main>
   );
 };
