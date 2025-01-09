@@ -39,5 +39,47 @@ const PostUtilsRoutes = [
         },
     },
     //route to add a comment
+    {
+        path: "/api/comment",
+        method: "POST",
+        handler: async (request, h) => {
+            try {
+                const { user_id } = request.auth.credentials;
+                const { postID, reply } = request.payload;
+                //query to add the comment
+                await dbConfig_1.default.query(`INSERT INTO comments (user_id, post_id, fcontent) 
+            VALUES ($1, $2, $3)`, [user_id, postID, reply]);
+                return h.response({ message: "Comment added" }).code(200);
+            }
+            catch (err) {
+                console.log(err);
+                return h
+                    .response({ error: "Internal Server Error, please try again" })
+                    .code(500);
+            }
+        },
+    },
+    //route to get all the comments
+    {
+        path: "/api/comment",
+        method: "GET",
+        handler: async (request, h) => {
+            try {
+                const { postID } = request.query;
+                const { rows } = await dbConfig_1.default.query(`SELECT 
+            u.pic, u.fname,u.user_id,c.fcontent,c.created_at 
+            FROM comments c
+            INNER JOIN users u ON u.user_id = c.user_id
+            WHERE c.post_id = $1`, [postID]);
+                return h.response({ rows }).code(200);
+            }
+            catch (err) {
+                console.log(err);
+                return h
+                    .response({ error: "Internal Server Error, please try again" })
+                    .code(500);
+            }
+        },
+    },
 ];
 exports.default = PostUtilsRoutes;

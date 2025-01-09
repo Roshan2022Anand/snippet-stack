@@ -56,7 +56,7 @@ const init = async () => {
             auth: false,
         },
         handler: () => {
-            return "Server is running!";
+            return "Server is running! into hell";
         },
     });
     // Register the routes

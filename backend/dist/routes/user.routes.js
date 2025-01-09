@@ -34,6 +34,26 @@ const UserRoutes = [
             }
         },
     },
+    //API endpoint to get the user details
+    {
+        path: "/api/user",
+        method: "GET",
+        handler: async (request, h) => {
+            try {
+                const { userID } = request.query;
+                //query to get the user details
+                const { rows } = await dbConfig_1.default.query(`SELECT user_id, fname, bio, pic FROM users WHERE user_id = ${userID}`);
+                if (rows)
+                    return h.response({ user: rows[0] }).code(200);
+                console.log(rows);
+                return h.response({ error: "User Not Found" }).code(404);
+            }
+            catch (error) {
+                console.log(error);
+                return h.response({ error: "internal error" }).code(500);
+            }
+        },
+    },
     //API endpoint to delete the user
     {
         path: "/api/user",

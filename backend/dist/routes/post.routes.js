@@ -29,22 +29,18 @@ const PostRoute = [
         method: "GET",
         handler: async (request, h) => {
             try {
+                const { user_id } = request.auth.credentials;
                 const { userID, lastID } = request.query;
-                //fetch all posts of the given user id or the logged in user
-                let posts;
-                if (lastID > 0) {
-                    const { rows } = await dbConfig_1.default.query(`SELECT * FROM posts 
-              WHERE user_id = $1 AND post_id < $2 
-              ORDER BY post_id DESC LIMIT 4`, [userID, lastID]);
-                    posts = rows;
-                }
-                else {
-                    const { rows } = await dbConfig_1.default.query(`SELECT * FROM posts 
-              WHERE user_id = $1
-              ORDER BY post_id DESC LIMIT 4`, [userID]);
-                    posts = rows;
-                }
-                return h.response({ posts }).code(200);
+                let conditionValue = [user_id, userID];
+                if (lastID > 0)
+                    conditionValue.push(lastID);
+                //fetch all posts related to user_id
+                const { rows } = await dbConfig_1.default.query(`${queries_1.BasicPostQuery} 
+              WHERE u.user_id = $2
+              ${lastID > 0 ? `AND p.post_id < $3` : ""}  
+              GROUP BY u.user_id,p.post_id
+              ORDER BY p.post_id DESC LIMIT 4`, conditionValue);
+                return h.response({ posts: rows }).code(200);
             }
             catch (err) {
                 console.log(err);
@@ -53,6 +49,61 @@ const PostRoute = [
         },
     },
     //route to get all the posts
+    // {
+    //   path: "/api/allposts",
+    //   method: "GET",
+    //   handler: async (request: Request, h: ResponseToolkit) => {
+    //     try {
+    //       const { user_id } = request.auth.credentials;
+    //       const { query, lastID } = request.query;
+    //       let posts;
+    // if (query && lastID > 0) {
+    //   //query to search posts based on query and lastID
+    //   const { rows } = await pool.query(
+    //     `${BasicPostQuery}
+    //   WHERE (fname ILIKE $2 OR title ILIKE $2 OR description ILIKE $2 OR category ILIKE $2) AND p.post_id < $3
+    //   GROUP BY u.user_id,p.post_id
+    //   ORDER BY post_id DESC LIMIT 4`,
+    //     [user_id, `%${query}%`, lastID]
+    //   );
+    //   posts = rows;
+    // } else if (query) {
+    //   //query to search posts based on query
+    //   const { rows } = await pool.query(
+    //     `${BasicPostQuery}
+    //         WHERE fname ILIKE $2 OR title ILIKE $2 OR description ILIKE $2 OR category ILIKE $2
+    //          GROUP BY u.user_id,p.post_id
+    //          ORDER BY post_id DESC LIMIT 4`,
+    //     [user_id, `%${query}%`]
+    //   );
+    //   posts = rows;
+    // } else if (lastID > 0) {
+    //   //query to fetch more posts based on lastID
+    //   const { rows } = await pool.query(
+    //     `${BasicPostQuery}
+    //         WHERE p.post_id < $2
+    //         GROUP BY u.user_id,p.post_id
+    //         ORDER BY post_id DESC LIMIT 4`,
+    //     [user_id, lastID]
+    //   );
+    //   posts = rows;
+    // } else {
+    //   //query to fetch new posts
+    //   const { rows } = await pool.query(
+    //     `${BasicPostQuery}
+    //     GROUP BY u.user_id, p.post_id
+    //     ORDER BY post_id DESC LIMIT 4`,
+    //     [user_id]
+    //   );
+    //   posts = rows;
+    // }
+    //       return h.response({ posts }).code(200);
+    //     } catch (err) {
+    //       console.log(err);
+    //       return h.response({ error: "Something went wrong" }).code(500);
+    //     }
+    //   },
+    // },
     {
         path: "/api/allposts",
         method: "GET",
@@ -60,38 +111,28 @@ const PostRoute = [
             try {
                 const { user_id } = request.auth.credentials;
                 const { query, lastID } = request.query;
-                let posts;
-                if (query && lastID > 0) {
-                    //query to search posts based on query and lastID
-                    const { rows } = await dbConfig_1.default.query(`${queries_1.BasicPostQuery}
-          WHERE (fname ILIKE $2 OR title ILIKE $2 OR description ILIKE $2 OR category ILIKE $2) AND p.post_id < $3
-          GROUP BY u.user_id,p.post_id;`, [user_id, `%${query}%`, lastID]);
-                    posts = rows;
+                //initial conditional query values
+                let conditionValue = [user_id];
+                let conditionQuery = lastID > 0 || query ? `WHERE ` : "";
+                //if lastID is given then add lastID condition
+                if (lastID > 0) {
+                    conditionValue.push(lastID);
+                    conditionQuery += `p.post_id < $${conditionValue.length}`;
                 }
-                else if (query) {
-                    //query to search posts based on query
-                    const { rows } = await dbConfig_1.default.query(`${queries_1.BasicPostQuery}
-                WHERE fname ILIKE $2 OR title ILIKE $2 OR description ILIKE $2 OR category ILIKE $2
-                 GROUP BY u.user_id,p.post_id
-                 ORDER BY post_id DESC LIMIT 4`, [user_id, `%${query}%`]);
-                    posts = rows;
+                //if query is given then add query condition
+                if (query) {
+                    conditionValue.push(`%${query}%`);
+                    let val = conditionValue.length;
+                    conditionQuery += `${val == 3 ? ` AND` : ""} (fname ILIKE $${val} OR title ILIKE $${val} OR description ILIKE $${val} OR category ILIKE $${val})`;
                 }
-                else if (lastID > 0) {
-                    //query to fetch more posts based on lastID
-                    const { rows } = await dbConfig_1.default.query(`${queries_1.BasicPostQuery}
-                WHERE p.post_id < $2 
-                GROUP BY u.user_id,p.post_id
-                ORDER BY post_id DESC LIMIT 4`, [user_id, lastID]);
-                    posts = rows;
-                }
-                else {
-                    //query to fetch new posts
-                    const { rows } = await dbConfig_1.default.query(`${queries_1.BasicPostQuery}
-            GROUP BY u.user_id, p.post_id
-            ORDER BY post_id DESC LIMIT 4`, [user_id]);
-                    posts = rows;
-                }
-                return h.response({ posts }).code(200);
+                //final query to fetch posts
+                const finalQuery = `${queries_1.BasicPostQuery}
+        ${conditionQuery}
+        GROUP BY u.user_id,p.post_id
+        ORDER BY post_id DESC LIMIT 4
+        `;
+                const { rows } = await dbConfig_1.default.query(finalQuery, conditionValue);
+                return h.response({ posts: rows }).code(200);
             }
             catch (err) {
                 console.log(err);
@@ -105,10 +146,11 @@ const PostRoute = [
         method: "GET",
         handler: async (request, h) => {
             try {
+                const { user_id } = request.auth.credentials;
                 const { postId } = request.query;
                 const { rows } = await dbConfig_1.default.query(`${queries_1.BasicPostQuery}
-            WHERE p.post_id = $1
-            GROUP BY u.user_id, p.post_id`, [postId]);
+            WHERE p.post_id = $2
+            GROUP BY u.user_id, p.post_id`, [user_id, postId]);
                 if (!rows[0])
                     return h.response({ error: "Post not found" }).code(404);
                 return h.response({ postData: rows[0] }).code(200);
@@ -123,7 +165,18 @@ const PostRoute = [
     {
         path: "/api/post",
         method: "PUT",
-        handler: async (request, h) => { },
+        handler: async (request, h) => {
+            try {
+                const { postForm: { title, description, image, category, about }, id, } = request.payload;
+                //query to update the post
+                await dbConfig_1.default.query(`UPDATE posts SET title = $1, description = $2, image = $3, about = $4, category = $5 WHERE post_id = $6`, [title, description, image, about, category, id]);
+                return h.response({ message: "Post created successfully" }).code(200);
+            }
+            catch (err) {
+                console.log(err);
+                return h.response({ error: "Something went wrong" }).code(500);
+            }
+        },
     },
     //route to delete a post
     {
