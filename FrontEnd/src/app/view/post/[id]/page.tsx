@@ -5,13 +5,9 @@ import { FaArrowRight, FaUser } from 'react-icons/fa';
 import { formatDate, hapiApi } from '@/lib/client-utils';
 import Image from 'next/image';
 import MarkdownIt from 'markdown-it';
-import {
-  ViewsSection,
-  VoteSection,
-} from '@/components/post-components/PostCardButtons';
+import { VoteSection } from '@/components/post-components/PostCardButtons';
 import { getCookies } from '@/lib/server-utils';
 import CommentsBox from '@/components/post-components/CommentsBox';
-import { Skeliton } from '@/components/utility-components/Skelitons';
 
 const Page = async ({ params }: { params: Promise<{ id: string }> }) => {
   const postId = (await params).id;

@@ -12,7 +12,7 @@ const Hapi = require("@hapi/hapi");
 const init = async () => {
   // Defining the server configuration with CORS
   const server = Hapi.server({
-    port: 5000,
+    port: process.env.PORT || 5000,
     host: "localhost",
     routes: {
       cors: {
