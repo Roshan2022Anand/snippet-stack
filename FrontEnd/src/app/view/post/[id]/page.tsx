@@ -11,6 +11,7 @@ import {
 } from '@/components/post-components/PostCardButtons';
 import { getCookies } from '@/lib/server-utils';
 import CommentsBox from '@/components/post-components/CommentsBox';
+import { Skeliton } from '@/components/utility-components/Skelitons';
 
 const Page = async ({ params }: { params: Promise<{ id: string }> }) => {
   const postId = (await params).id;
@@ -94,7 +95,8 @@ const Page = async ({ params }: { params: Promise<{ id: string }> }) => {
       <footer className="w-[85%] mx-auto max-w-[800px] px-2">
         <section className="flex gap-3 w-1/2 h-[70px] my-2">
           <VoteSection post={postData} />
-          <ViewsSection views={postData.views} />
+          <div className="grow"></div>
+          {/* <ViewsSection views={postData.views} /> */}
         </section>
         {/* comment section */}
         <CommentsBox postID={postData.post_id} />

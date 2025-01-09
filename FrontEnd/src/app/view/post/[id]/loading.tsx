@@ -9,8 +9,8 @@ const Loading = () => {
     <>
       <NavSkeliton />
       <section className="heading">
-        <div className="w-[85%] max-w-[700px] mx-auto">
-          <article className="flex justify-between p-1">
+        <div className="w-[80%] max-w-[1000px] lg:flex flex-row-reverse justify-around gap-1">
+          <article className="flex lg:flex-col-reverse lg:justify-evenly lg:w-1/2 justify-between p-1 backdrop-blur-[5px]">
             <div className="flex flex-col gap-2">
               <div className="w-[50px] h-[15px] skeliton-parent">
                 <Skeliton />
@@ -18,11 +18,11 @@ const Loading = () => {
               <div className="w-[40px] h-[10px]  skeliton-parent">
                 <Skeliton />
               </div>
-              <div className="w-[60px] h-[8px]  skeliton-parent">
+              <div className="w-[160px] h-[25px]  skeliton-parent">
                 <Skeliton />
               </div>
             </div>
-            <div className="flex gap-2">
+            <div className="flex items-start justify-end lg:flex-row-reverse gap-2">
               <div className="skeliton-parent w-[100px] h-10">
                 <Skeliton />
               </div>
