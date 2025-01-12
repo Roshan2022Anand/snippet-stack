@@ -31,7 +31,7 @@ const init = async () => {
       name: "session",
       password: "!wsYhFA*C2U6nz=Bu^X2@2beCem8kSR6",
       isSecure: process.env.NODE_ENV === "production",
-      ttl: 24 * 60 * 60 * 1000,
+      ttl: 64 * 60 * 60 * 1000,
       path: "/",
       isSameSite: "None",
       isHttpOnly: true,
