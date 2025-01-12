@@ -14,11 +14,11 @@ const Hapi = require("@hapi/hapi");
 const init = async () => {
     // Defining the server configuration with CORS
     const server = Hapi.server({
-        port: 5000,
-        host: "localhost",
+        port: process.env.PORT || 5000,
+        host: "0.0.0.0",
         routes: {
             cors: {
-                origin: [process.env.FRONTEND_URL],
+                origin: [process.env.FRONTEND_URL_ONE, process.env.FRONTEND_URL_TWO],
                 credentials: true,
             },
         },
