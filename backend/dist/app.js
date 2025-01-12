@@ -18,7 +18,7 @@ const init = async () => {
         host: "0.0.0.0",
         routes: {
             cors: {
-                origin: [process.env.FRONTEND_URL_ONE, process.env.FRONTEND_URL_TWO],
+                origin: [process.env.FRONTEND_URL],
                 credentials: true,
             },
         },
@@ -30,10 +30,11 @@ const init = async () => {
         cookie: {
             name: "session",
             password: "!wsYhFA*C2U6nz=Bu^X2@2beCem8kSR6",
-            isSecure: false,
+            isSecure: process.env.NODE_ENV === "production",
             ttl: 24 * 60 * 60 * 1000,
             path: "/",
-            isSameSite: "Lax",
+            isSameSite: "None",
+            isHttpOnly: true,
         },
         redirectTo: `${process.env.FRONTEND_URL}/signup`,
         // @ts-ignore
