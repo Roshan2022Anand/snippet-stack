@@ -56,7 +56,7 @@ export const userLogin = async (request: Request, h: ResponseToolkit) => {
     if (!user) return h.response({ error: "User Does not exists" }).code(401);
 
     //checking if the password is correct
-    const isValid = await Bcrypt.compareSync(password, user.fpassword);
+    const isValid = await Bcrypt.compare(password, user.fpassword);
 
     if (isValid) {
       //@ts-ignore
@@ -64,6 +64,7 @@ export const userLogin = async (request: Request, h: ResponseToolkit) => {
         name: user.fname,
         email: user.email,
       });
+      console.log(request.auth);
       return h.response({ message: "Logged in successfully" }).code(200);
     }
 

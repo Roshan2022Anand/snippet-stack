@@ -11,10 +11,9 @@ import {
   NavSkeliton,
   PostContainerSkeliton,
 } from "./components/utility-components/Skelitons";
-import { useNavigate } from "react-router-dom";
 
 const App = () => {
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
   const queryRef = React.useRef<HTMLInputElement>(null);
 
   //all states
@@ -22,6 +21,7 @@ const App = () => {
   const [posts, setPosts] = useState<PostInfoType[] | null>(null);
   const [query, setquery] = useState<string>();
   const [loading, setloading] = useState(true);
+  const [postLoading, setpostLoading] = useState(false);
 
   //to fetch user data
   const getSessionData = async () => {
@@ -30,9 +30,9 @@ const App = () => {
       const fetchedSession = res.data.user;
       setSession(fetchedSession);
     } catch (err) {
-      navigate("/login");
       console.log("Error fetching session:", err);
     }
+    setloading(false);
   };
   getSessionData();
 
@@ -48,10 +48,13 @@ const App = () => {
       } catch (err) {
         console.log("Error fetching posts:", err);
       }
-      setloading(false);
+      setpostLoading(false);
     };
-    getPots();
-  }, [query]);
+    if (session) {
+      setpostLoading(true);
+      getPots();
+    }
+  }, [session, query]);
 
   return (
     <>
@@ -84,7 +87,7 @@ const App = () => {
           </section>
         </section>
       </header>
-      {loading ? (
+      {postLoading ? (
         <PostContainerSkeliton />
       ) : posts && session ? (
         <main>

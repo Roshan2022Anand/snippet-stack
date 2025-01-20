@@ -33,11 +33,11 @@ const init = async () => {
       isSecure: process.env.NODE_ENV === "production",
       ttl: 64 * 60 * 60 * 1000,
       path: "/",
-      isSameSite: "None",
+      isSameSite: process.env.NODE_ENV === "production" ? "None" : "Lax",
       isHttpOnly: true,
     },
     // @ts-ignore
-    validate: async (request, h, session) => {
+    validate: async (request, session) => {
       const email = session.email;
       const { rows } = await pool.query(
         `SELECT * FROM users u WHERE u.email = $1`,
@@ -48,7 +48,6 @@ const init = async () => {
       }
       return {
         isValid: false,
-        response: h.response({ message: "Unauthorized" }).code(401), // Return 401 status
       };
     },
   });
