@@ -36,9 +36,8 @@ const init = async () => {
       isSameSite: "None",
       isHttpOnly: true,
     },
-    redirectTo: `${process.env.FRONTEND_URL}/signup`,
     // @ts-ignore
-    validate: async (request, session) => {
+    validate: async (request, h, session) => {
       const email = session.email;
       const { rows } = await pool.query(
         `SELECT * FROM users u WHERE u.email = $1`,
@@ -47,7 +46,10 @@ const init = async () => {
       if (rows[0]) {
         return { isValid: true, credentials: rows[0] };
       }
-      return { isValid: false };
+      return {
+        isValid: false,
+        response: h.response({ message: "Unauthorized" }).code(401), // Return 401 status
+      };
     },
   });
   server.auth.default("session");

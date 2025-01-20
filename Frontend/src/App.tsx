@@ -11,8 +11,10 @@ import {
   NavSkeliton,
   PostContainerSkeliton,
 } from "./components/utility-components/Skelitons";
+import { useNavigate } from "react-router-dom";
+
 const App = () => {
-  // all ref
+  const navigate = useNavigate();
   const queryRef = React.useRef<HTMLInputElement>(null);
 
   //all states
@@ -28,6 +30,7 @@ const App = () => {
       const fetchedSession = res.data.user;
       setSession(fetchedSession);
     } catch (err) {
+      navigate("/login");
       console.log("Error fetching session:", err);
     }
   };
