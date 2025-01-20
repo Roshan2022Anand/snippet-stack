@@ -24,17 +24,19 @@ const App = () => {
   const [postLoading, setpostLoading] = useState(true);
 
   //to fetch user data
-  const getSessionData = async () => {
-    try {
-      const res = await hapiApi.get("/api/auth");
-      const fetchedSession = res.data.user;
-      setSession(fetchedSession);
-    } catch (err) {
-      console.log("Error fetching session:", err);
-    }
-    setloading(false);
-  };
-  getSessionData();
+  useEffect(() => {
+    const getSessionData = async () => {
+      try {
+        const res = await hapiApi.get("/api/auth");
+        const fetchedSession = res.data.user;
+        setSession(fetchedSession);
+      } catch (err) {
+        console.log("Error fetching session:", err);
+      }
+      setloading(false);
+    };
+    getSessionData();
+  }, []);
 
   //to fetch posts
   useEffect(() => {
