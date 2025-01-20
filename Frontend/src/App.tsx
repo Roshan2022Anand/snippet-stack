@@ -21,7 +21,7 @@ const App = () => {
   const [posts, setPosts] = useState<PostInfoType[] | null>(null);
   const [query, setquery] = useState<string>();
   const [loading, setloading] = useState(true);
-  const [postLoading, setpostLoading] = useState(false);
+  const [postLoading, setpostLoading] = useState(true);
 
   //to fetch user data
   const getSessionData = async () => {
@@ -50,11 +50,8 @@ const App = () => {
       }
       setpostLoading(false);
     };
-    if (session) {
-      setpostLoading(true);
-      getPots();
-    }
-  }, [session, query]);
+    getPots();
+  }, [query]);
 
   return (
     <>
