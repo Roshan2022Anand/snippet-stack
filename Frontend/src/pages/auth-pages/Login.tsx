@@ -13,6 +13,7 @@ const Login = () => {
 
   //function to handle the form submission
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    setisLoading(true)
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
     const email = formData.get("email");
@@ -63,7 +64,6 @@ const Login = () => {
         <button
           type="submit"
           className="btn-accent-one mt-2 border-2 border-textPrimary"
-          onClick={() => setisLoading(true)}
         >
           {isLoading ? "Loading..." : "Login"}
         </button>

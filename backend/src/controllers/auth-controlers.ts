@@ -64,7 +64,6 @@ export const userLogin = async (request: Request, h: ResponseToolkit) => {
         name: user.fname,
         email: user.email,
       });
-      console.log(request.auth);
       return h.response({ message: "Logged in successfully" }).code(200);
     }
 

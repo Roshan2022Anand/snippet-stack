@@ -61,7 +61,7 @@ const App = () => {
         {loading ? <NavSkeliton /> : <NavBar session={session} />}
         <section className="heading">
           <h1>Find Programming insights here</h1>
-          <section className="search-form mx-auto flex w-1/2 max-w-[350px] items-center gap-1 rounded-lg border-2 border-accentPrimary bg-bgPrimary px-2 py-1">
+          <section className="p-1 rounded-lg bg-bgPrimary flex w-2/3 max-w-[300px]">
             <input
               type="text"
               className="bg-transparent text-accentPrimary focus:outline-none grow"
@@ -81,7 +81,7 @@ const App = () => {
                 setquery(queryRef.current?.value);
               }}
             >
-              <FaSearch />
+              <FaSearch className="size-[30px] sm:size-full"/>
             </button>
           </section>
         </section>

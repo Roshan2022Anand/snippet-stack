@@ -15,6 +15,7 @@ const Signup = () => {
 
   //function to handle the form submission
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    setisLoading(true);
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
     const name = formData.get("name");
@@ -92,7 +93,6 @@ const Signup = () => {
         <button
           type="submit"
           className="btn-accent-one mt-2 border-2 border-textPrimary"
-          onClick={() => setisLoading(true)}
         >
           {isLoading ? "Loading..." : "Sign Up"}
         </button>
