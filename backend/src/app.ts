@@ -16,7 +16,7 @@ const init = async () => {
     host: "0.0.0.0",
     routes: {
       cors: {
-        origin: [process.env.FRONTEND_URL, process.env.WARMUP_URL],
+        origin: [process.env.FRONTEND_URL],
         credentials: true,
       },
     },
@@ -63,15 +63,7 @@ const init = async () => {
       auth: false,
     },
     handler: async () => {
-      //to warm up the server
-      try {
-        await pool.query("SELECT * FROM users LIMIT 100");
-        console.log("hai");
-        return "Server is running! ";
-      } catch (err) {
-        console.log(err);
-        return "error in server";
-      }
+      return "Server is Running"
     },
   });
 
